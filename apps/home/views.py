@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import login as dj_login, logout, authenticate
+from django.contrib.auth.models import Group
 from .forms import LoginForm, NewUserForm
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy 
@@ -38,6 +39,7 @@ class Login(FormView):
     
 def registro(request):               
     if request.method == 'POST':
+        peticion = request.POST.copy()
         form = NewUserForm(request.POST)
         if form.is_valid():
 
@@ -45,7 +47,10 @@ def registro(request):
             dj_login(request, user)
             #permission = Permission.objects.get(name='Can view Rutina')
             #user.user_permissions.add(permission)
-            user.save()
+            #user.save()
+            nombreGrupo = peticion.pop('rol')
+            grupo = Group.objects.get(name=nombreGrupo[0]) 
+            grupo.user_set.add(user)
             return redirect ('/home')
         else:
             error = form.errors
