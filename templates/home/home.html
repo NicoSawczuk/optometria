@@ -1,11 +1,18 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href=" {% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href=" {% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
     <title>Home</title>
 </head>
 <body>
-    Home
+
+    {%block scripts%}
+    <script src=" {% static 'jquery/jquery-3.5.1.min.js' %}"></script>
+    <script src=" {% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    {%endblock scripts%}
 </body>
 </html>
