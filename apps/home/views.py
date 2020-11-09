@@ -11,12 +11,19 @@ from django.views.decorators.csrf import csrf_protect
 
 from django.contrib.auth.models import User, Permission
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from .models import *
 
 # Create your views here.
 
 def home (request):
-    return render (request, 'home/home.html')
+    usr = request.user
+    user = User.objects.get(id=usr.id)
+    return render (request, 'home/home.html',{'user':user})
 
+
+def indexPacientes (request):
+    pacientes = Paciente.objects.all()
+    return render (request, 'pacientes/index.html',{'pacientes':pacientes})
 
 
 class Login(FormView):
