@@ -13,6 +13,7 @@ from django.contrib.auth.models import User, Permission
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from .models import *
 
+
 # Create your views here.
 
 def home (request):
@@ -52,12 +53,16 @@ def registro(request):
 
             user = form.save()
             dj_login(request, user)
-            #permission = Permission.objects.get(name='Can view Rutina')
-            #user.user_permissions.add(permission)
-            #user.save()
+            user.save()
+            #Le asignamos el rol
             nombreGrupo = peticion.pop('rol')
             grupo = Group.objects.get(name=nombreGrupo[0]) 
             grupo.user_set.add(user)
+            
+            #Creamos la instancia de medico si lo es
+            if (str(nombreGrupo[0]) == "Profesional medico"):
+                medico = Medico.objects.create(nombre=request.POST.get('first_name'),apellido=request.POST.get('last_name'),fecha_nac=request.POST.get('fecha_nac'),sexo=request.POST.get('sexo'), user_id=user.id)
+                medico.save()
             return redirect ('/home')
         else:
             error = form.errors

@@ -1,6 +1,7 @@
 {%load static%}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,98 +9,122 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Registrarse</title>
 </head>
+
 <body class="container mt-2">
-        <form method="POST">
+    <form method="POST">
         {% csrf_token %}
         <div class="card">
             <div class="card-header alert-primary"><strong>Registro</strong></div>
-                <div class="card-body card-block">
+            <div class="card-body card-block">
                 {%if error != None%}
                 <div class="alert alert-danger" role="alert">
                     <h4 class="alert-heading">Error</h4>
-                        {{error}}
+                    {{error}}
                 </div>
                 {%endif%}
-                        <div class="">
-                            <div class="form-group">
-                                <div class="row form-group">
-                                    <div class="col col-md-3">{{form.username.label}}</div>
-                                    <div class="col-12 col-md-9">
-                                        {{form.username}}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                    <div class="row form-group">
-                                        <div class="col col-md-3">{{form.email.label}}</div>
-                                        <div class="col-12 col-md-9 ">
-                                                {{form.email}}
-                                        </div>
-                                    </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="row form-group">
-                                    <div class="col col-md-3">{{form.password1.label}}</div>
-                                    <div class="col-12 col-md-9">
-                                            {{form.password1}}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                    <div class="row form-group">
-                                        <div class="col col-md-3">{{form.password2.label}}</div>
-                                        <div class="col-12 col-md-9">
-                                                {{form.password2}}
-                                        </div>
-                                    </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="row form-group">
-                                    <div class="col col-md-3">Rol</div>
-                                    <div class="col-12 col-md-9">
-                                        <select class="custom-select" name="rol" required>
-                                            <option selected disabled>Selecciona un rol</option>
-                                            <option value="Profesional medico">Profesional medico</option>
-                                            <option value="Gerencia">Gerencia</option>
-                                            <option value="Secretaria">Secretaria</option>
-                                            <option value="Taller">Taller</option>
-                                            <option value="Ventas">Ventas</option>
-                                          </select>
-                                    </div>
-                                </div>
+                <div class="">
+                    <div class="form-group">
+                        <div class="row form-group">
+                            <div class="col col-md-3">{{form.username.label}}</div>
+                            <div class="col-12 col-md-9">
+                                {{form.username}}
                             </div>
                         </div>
-                    
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">Datos personales</div>
-                    <div class="card-body card-block">
-                        <div class="form-group">
-                            <div class="row form-group">
-                                <div class="col col-md-3">{{form.first_name.label}}</div>
-                                    <div class="col-12 col-md-9">
-                                        {{form.first_name}}
-                                    </div>
-                            </div>
-                            <div class="row form-group">
-                                <div class="col col-md-3">{{form.last_name.label}}</div>
-                                    <div class="col-12 col-md-9">
-                                        {{form.last_name}}
-                                    </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Registrarse <i class="fas fa-arrow-circle-right"></i></button>
-                        </div>
-                        <hr>
-                        Si ya tienes una cuenta, puedes <a href="/accounts/login/">ingresar</a>
                     </div>
-            </div>
-            </form>
-            
-</body>
-</html>
+                    <div class="form-group">
+                        <div class="row form-group">
+                            <div class="col col-md-3">{{form.email.label}}</div>
+                            <div class="col-12 col-md-9 ">
+                                {{form.email}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row form-group">
+                            <div class="col col-md-3">{{form.password1.label}}</div>
+                            <div class="col-12 col-md-9">
+                                {{form.password1}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row form-group">
+                            <div class="col col-md-3">{{form.password2.label}}</div>
+                            <div class="col-12 col-md-9">
+                                {{form.password2}}
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="form-group">
+                        <div class="row form-group">
+                            <div class="col col-md-3">Rol</div>
+                            <div class="col-12 col-md-9">
+                                <select class="custom-select" name="rol" required>
+                                    <option selected disabled>Selecciona un rol</option>
+                                    <option value="Profesional medico">Profesional medico</option>
+                                    <option value="Gerencia">Gerencia</option>
+                                    <option value="Secretaria">Secretaria</option>
+                                    <option value="Taller">Taller</option>
+                                    <option value="Ventas">Ventas</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">Datos personales</div>
+            <div class="card-body card-block">
+                <div class="form-group">
+                    <div class="row form-group">
+                        <div class="col col-md-3">{{form.first_name.label}}</div>
+                        <div class="col-12 col-md-9">
+                            {{form.first_name}}
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">{{form.last_name.label}}</div>
+                        <div class="col-12 col-md-9">
+                            {{form.last_name}}
+                        </div>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col col-md-3">Sexo</div>
+                        <div class="col-12 col-md-9">
+                            <select class="browser-default custom-select" name="sexo" require>
+                                <option value="F">Femenino</option>
+                                <option value="M">Masculino</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3">Fecha de nacimiento</div>
+                        <div class="col-12 col-md-9">
+                            <input type="date" class="form-control" style="width: 200px;" name="fecha_nac"
+                                id="fecha_nac" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Registrarse <i
+                            class="fas fa-arrow-circle-right"></i></button>
+                </div>
+                <hr>
+                Si ya tienes una cuenta, puedes <a href="/accounts/login/">ingresar</a>
+            </div>
+        </div>
+    </form>
+
+    <script type="text/javascript">
+        document.getElementById("fecha_nac").max = new Date().toISOString().split("T")[0];
+    </script>
+</body>
+
+</html>

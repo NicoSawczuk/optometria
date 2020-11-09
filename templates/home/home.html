@@ -10,11 +10,12 @@
 
 
     <link rel="stylesheet" href=" {% static 'datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+
+    <link rel="stylesheet" href=" {% static 'toastr/toastr.min.css' %}">
     <title> {%block titulo%} Home {%endblock titulo%}</title>
 </head>
 
 <body>
-
     {%block navbar%}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand">Optomotria</a>
@@ -27,15 +28,6 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="/home/pacientes/index">Pacientes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/rutinas/revisiones/{{user.id}}">Revisiones</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/home/listado_alumnos/{{user.id}}">Mis alumnos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/home/administracion">Administrar</a>
                 </li>
 
                 <li class="nav-item dropdown">
@@ -56,7 +48,21 @@
     <div class="row justify-content-center">
         <div class="col-md-9">
             {%block body%}
-            
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == 'success'%}
+            <script>
+                toastr.success(' {{message}} ', 'Correcto')
+            </script>
+            {%endif%}
+            {% if message.tags == 'error'%}
+            <script>
+                toastr.error(' {{message}} ', 'Error')
+            </script>
+            {%endif%}
+            {% endfor %}
+            {% endif %}
+
             {%endblock body %}
         </div>
     </div>
@@ -69,6 +75,8 @@
     <script src=" {% static 'datatables/jquery.dataTables.min.js' %}"></script>
     <script src=" {% static 'datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
     <script src=" {% static 'datatables/incluirDatatable.js' %}"></script>
+
+    <script src=" {% static 'toastr/toastr.min.js' %}"></script>
     {%endblock scripts%}
 
 </body>
