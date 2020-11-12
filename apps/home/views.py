@@ -77,16 +77,49 @@ def createObservacionPaciente(request):
 
 
 def indexTurnos (request):
-    turnos = Paciente.objects.all()
+    turnos = Turno.objects.all()
     return render (request, 'turnos/index.html',{'turnos':turnos})
 
 def createTurno (request):
-    pass
+    medicos = Medico.objects.all()
+    pacientes = Paciente.objects.all()
+    if request.method == 'GET':
+        return render (request, 'turnos/create.html',{'medicos':medicos, 'pacientes':pacientes})
+    else:
+        if (Turno.objects.filter(paciente_id = request.POST.get('paciente'),fecha = request.POST.get('fecha')).exists()):
+            messages.error(request, 'El paciente ya tiene asignado un turno en el dia seleccionado')
+            return redirect ('/home/turnos/index')
+        else:
+            turno = Turno.objects.create(
+                paciente_id = request.POST.get('paciente'),
+                medico_id = request.POST.get('medico'),
+                fecha = request.POST.get('fecha'),
+                detalle = request.POST.get('detalle'),
+            )
+            turno.save()
+            messages.success(request, "Turno agregado con exito")
+            return redirect ('/home/turnos/index')
 
 
 def editTurno (request, pk):
-    pass
-
+    turno = Turno.objects.get(id=pk)
+    medicos = Medico.objects.all()
+    pacientes = Paciente.objects.all()
+    if request.method == 'GET':
+        return render (request, 'turnos/edit.html',{'turno':turno, 'medicos':medicos, 'pacientes':pacientes})
+    else:
+        turno = Turno.objects.filter(id=request.POST['id']).update(
+            medico_id = request.POST.get('medico'),
+            fecha = request.POST.get('fecha'),
+            detalle = request.POST.get('detalle'),
+        )
+        messages.success(request, "Turno modificado con exito")
+        return redirect ('/home/turnos/index')
+    
+def deleteTurno(request,pk):
+    Turno.objects.get(id=pk).delete()
+    messages.success(request, "Turno eliminado con exito")
+    return redirect ('/home/turnos/index')
 
 class Login(FormView):
     template_name='login.html'

@@ -43,9 +43,9 @@ class ObservacionPaciente(models.Model):
     
 class Turno(models.Model):
     id = models.AutoField(primary_key = True)
-    paciente = models.OneToOneField(Paciente, on_delete=models.CASCADE)
-    medico = models.OneToOneField(Medico, on_delete=models.CASCADE)
-    fecha_nac = models.CharField(blank = False, null = True,max_length = 10)
+    paciente = models.ForeignKey(Paciente, verbose_name="Paciente", on_delete=models.CASCADE)
+    medico = models.ForeignKey(Medico, verbose_name="Medico", on_delete=models.CASCADE)
+    fecha = models.CharField(blank = False, null = True,max_length = 10)
     detalle = models.TextField(blank = False, null = True)
     
     
