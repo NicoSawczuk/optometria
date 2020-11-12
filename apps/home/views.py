@@ -31,40 +31,35 @@ def indexPacientes (request):
 
 
 def createPaciente (request):
-    medicos = Medico.objects.all()
     if request.method == 'GET':
-        return render (request, 'pacientes/create.html',{'medicos':medicos})
+        return render (request, 'pacientes/create.html')
     else:
         paciente = Paciente.objects.create(
             nombre = request.POST['nombre'],
             apellido = request.POST['apellido'],
             fecha_nac = request.POST['fecha_nac'],
             sexo = request.POST['sexo'],
-            medico_id = Medico.objects.get(id=int(request.POST['medico'])).id,
         )
         paciente.save()
         messages.success(request, "Paciente agregado con exito")
         return redirect ('/home/pacientes/index')
     
 
-def editarPaciente (request, pk):
+def editPaciente (request, pk):
     paciente = Paciente.objects.get(id=pk)
-    medicoSelect = paciente.medico
-    medicos = Medico.objects.all()
     if request.method == 'GET':
-        return render (request, 'pacientes/edit.html',{'medicos':medicos, 'paciente':paciente, 'medicoSelect':medicoSelect})
+        return render (request, 'pacientes/edit.html',{ 'paciente':paciente})
     else:
         paciente = Paciente.objects.filter(id=request.POST['id']).update(
             nombre = request.POST['nombre'],
             apellido = request.POST['apellido'],
             fecha_nac = request.POST['fecha_nac'],
-            sexo = request.POST['sexo'],
-            medico_id = Medico.objects.get(id=int(request.POST['medico'])).id)
+            sexo = request.POST['sexo'])
         messages.success(request, "Paciente modificado con exito")
         return redirect ('/home/pacientes/index')
     
 def observacionesPaciente(request):
-    observaciones = ObservacionPaciente.objects.filter(paciente_id=request.GET['id'])
+    observaciones = ObservacionPaciente.objects.filter(paciente_id=request.GET['id']).order_by('-id')
     print(observaciones)
     
     data = serializers.serialize('json',observaciones,
@@ -79,6 +74,18 @@ def createObservacionPaciente(request):
     
     messages.success(request, "Observación agregada con éxito")
     return redirect ('/home/pacientes/index')
+
+
+def indexTurnos (request):
+    turnos = Paciente.objects.all()
+    return render (request, 'turnos/index.html',{'turnos':turnos})
+
+def createTurno (request):
+    pass
+
+
+def editTurno (request, pk):
+    pass
 
 
 class Login(FormView):
