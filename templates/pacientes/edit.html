@@ -1,0 +1,75 @@
+{%extends 'home/home.html'%}
+{%load static%}
+
+{%block titulo%} Cargar un paciente {%endblock titulo%}
+
+{%block body%}
+<div class="card">
+    <div class="card-header bg-light">
+        <strong>Crear un paciente</strong>
+    </div>
+    <div class="card-body card-block">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group row">
+                <div class="form-group col-md-3">
+                    <label for="nombre" class=" col-form-label text-md-right">Nombre</label>
+                    <input id="nombre" type="text" class="form-control" name="nombre" value="{{paciente.nombre}}"
+                        placeholder="Ingrese el nombre" pattern="[A-Za-z]{}" required>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="apellido" class=" col-form-label text-md-right">Apellido</label>
+                    <input id="apellido" type="text" class="form-control" name="apellido" value="{{paciente.apellido}}"
+                        placeholder="Ingrese el apellido" pattern="[A-Za-z]{}" required>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="sexo" class=" col-form-label text-md-right">Sexo</label>
+                    <select class="browser-default custom-select" name="sexo" required>
+                        {%if paciente.sexo == 'F'%}
+                        <option value="F" selected>Femenino</option>
+                        <option value="M">Masculino</option>
+                        {%else%}
+                        <option value="F">Femenino</option>
+                        <option value="M" selected>Masculino</option>
+                        {%endif%}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="form-group col-md-3">
+                    <label for="fecha_nac" class=" col-form-label text-md-right">Fecha de nacimiento</label>
+                    <input type="date" class="form-control" style="width: 100%" name="fecha_nac" id="fecha_nac" value="{{paciente.fecha_nac}}"
+                        required>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="medico" class=" col-form-label text-md-right">Medico</label>
+                    <select class="browser-default custom-select" name="medico" required>
+                        {%for medico in medicos%}
+                            {%if medico.id == medicoSelect.id%}
+                                <option value="{{medico.id}}" selected>{{medico.nombre}} {{medico.apellido}}</option>
+                            {%else%}
+                                <option value="{{medico.id}}">{{medico.nombre}} {{medico.apellido}}</option>
+                            {%endif%}
+                        {%endfor%}
+                    </select>
+                </div>
+            </div>
+            <input type="hidden" value="{{paciente.id}}" name="id">
+
+    </div>
+    <div class="card-footer float">
+        <div class="float-right">
+            <a href="/home/pacientes/index" class="btn btn-dark"><i class="fal fa-times"></i> Cancelar </a>
+            <button type="submit" class="btn btn-primary "><i class="fal fa-check"></i> Guardar</button>
+        </div>
+    </div>
+</div>
+</form>
+</div>
+<script type="text/javascript">
+    document.getElementById("fecha_nac").max = new Date().toISOString().split("T")[0];
+</script>
+{%endblock body%}

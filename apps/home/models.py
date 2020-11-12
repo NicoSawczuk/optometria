@@ -34,3 +34,10 @@ class Paciente(models.Model):
     
     def __str__(self):
         return self.nombre
+    
+class ObservacionPaciente(models.Model):
+    id = models.AutoField(primary_key = True)
+    detalle = models.TextField(blank = False, null = True)
+    paciente = models.ForeignKey(Paciente, verbose_name="Paciente", on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now=True)
+    

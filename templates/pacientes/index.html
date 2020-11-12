@@ -4,10 +4,11 @@
 {%block titulo%} Pacientes {%endblock titulo%}
 
 {%block body%}
+
 <div class="card">
     <div class="card-header bg-light">
         <strong>Pacientes</strong>
-        <a class="btn btn-primary btn-sm float-right text-white" href="">Nuevo</a>
+        <a class="btn btn-primary btn-sm float-right text-white" href="/home/pacientes/create">Nuevo</a>
     </div>
     <div class="card-body card-block">
         <table id="datatable" class="table table-striped table-bordered dataTable">
@@ -29,8 +30,10 @@
                     <td>{{paciente.sexo}}</td>
 
                     <td class="text-right">
-                        <a class="btn btn-light btn-sm" href="">Editar</a>
-                        <a class="btn btn-danger btn-sm text-white delete" >Borrar</a>
+                        <a title="Editar" class="btn btn-light btn-sm"
+                            href="/home/pacientes/edit/{{paciente.id}}">Editar</a>
+                        <a title="Observaciones" class="btn btn-light btn-sm"
+                            onclick="openModal('{{paciente.id}}')">Observaciones</a>
                     </td>
                 </tr>
                 {%endfor%}
@@ -39,4 +42,98 @@
     </div>
 </div>
 
+<div id="observacionesModal" class="modal fade bd-example-modal-xl" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Observaciones</h2>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <a class="btn btn-success btn-sm text-white mb-2" onClick="mostrarFormObservacion()">Nueva
+                    observación</a>
+                <div class="form-group row" id="formNuevaObservacion" style="display: none;">
+                    <form method="POST" action="/home/pacientes/observaciones/create">
+                        {% csrf_token %}
+                        <div class="form-group col-md-7">
+                            <label for="nombre" class=" col-form-label text-md-right">Detalle</label>
+                            <textarea id="detalle" type="text" class="form-control" name="detalle" value=""
+                                placeholder="Ingrese el detalle" pattern="[A-Za-z]{}"
+                                required></textarea>
+                            <input type="hidden" id="inputNuevaObservacion" name="id">
+                            <button type="submit" class="btn btn-sm btn-primary mt-1"><i class="fal fa-check"></i>
+                                Guardar</button>
+                        </div>
+                    </form>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <div id="observaciones"></div>
+
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {%endblock body%}
+{%block scripts%}
+{{ block.super }}
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'success'%}
+<script>
+    toastr.success(' {{message}} ', 'Correcto')
+</script>
+{%endif%}
+{% if message.tags == 'error'%}
+<script>
+    toastr.error(' {{message}} ', 'Error')
+</script>
+{%endif%}
+{% endfor %}
+{% endif %}
+
+<script>
+
+    function openModal(id) {
+        $('#observacionesModal').modal('show');
+
+        $('#inputNuevaObservacion').val(id)
+        $.ajax({
+            data: { 'id': id },
+            url: '/home/pacientes/observaciones', //El id que estoy guardando en data se va a enviar en esa url
+            type: 'get',
+            success: function (data) {
+                var html = ""
+                console.log(data)
+
+                for (var i = 0; i < data.length; i++) {
+                    html += '<li class="list-group-item">' + '<div class="row">' +
+                        '<div class="col-9">'
+                        + data[i].fields.detalle +
+                        '</div>' +
+                        '<div class="col-3 text-muted">'
+                        + data[i].fields.fecha.substring(0, 10) +
+                        '</div>' +
+                        '</div>' + '</li>'
+
+                }
+                $('#observaciones').html(html);
+
+            },
+        });
+    }
+
+    function mostrarFormObservacion() {
+        if ($("#formNuevaObservacion").css("display") === 'block') {
+            $("#formNuevaObservacion").css("display", "none");
+        } else {
+            $("#formNuevaObservacion").css("display", "block");
+        }
+    }
+
+</script>
+{%endblock scripts%}

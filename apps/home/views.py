@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
+from django.core import serializers
 from django.contrib.auth import login as dj_login, logout, authenticate
 from django.contrib.auth.models import Group
 from .forms import LoginForm, NewUserForm
@@ -12,6 +13,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.models import User, Permission
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from .models import *
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 # Create your views here.
@@ -25,6 +28,57 @@ def home (request):
 def indexPacientes (request):
     pacientes = Paciente.objects.all()
     return render (request, 'pacientes/index.html',{'pacientes':pacientes})
+
+
+def createPaciente (request):
+    medicos = Medico.objects.all()
+    if request.method == 'GET':
+        return render (request, 'pacientes/create.html',{'medicos':medicos})
+    else:
+        paciente = Paciente.objects.create(
+            nombre = request.POST['nombre'],
+            apellido = request.POST['apellido'],
+            fecha_nac = request.POST['fecha_nac'],
+            sexo = request.POST['sexo'],
+            medico_id = Medico.objects.get(id=int(request.POST['medico'])).id,
+        )
+        paciente.save()
+        messages.success(request, "Paciente agregado con exito")
+        return redirect ('/home/pacientes/index')
+    
+
+def editarPaciente (request, pk):
+    paciente = Paciente.objects.get(id=pk)
+    medicoSelect = paciente.medico
+    medicos = Medico.objects.all()
+    if request.method == 'GET':
+        return render (request, 'pacientes/edit.html',{'medicos':medicos, 'paciente':paciente, 'medicoSelect':medicoSelect})
+    else:
+        paciente = Paciente.objects.filter(id=request.POST['id']).update(
+            nombre = request.POST['nombre'],
+            apellido = request.POST['apellido'],
+            fecha_nac = request.POST['fecha_nac'],
+            sexo = request.POST['sexo'],
+            medico_id = Medico.objects.get(id=int(request.POST['medico'])).id)
+        messages.success(request, "Paciente modificado con exito")
+        return redirect ('/home/pacientes/index')
+    
+def observacionesPaciente(request):
+    observaciones = ObservacionPaciente.objects.filter(paciente_id=request.GET['id'])
+    print(observaciones)
+    
+    data = serializers.serialize('json',observaciones,
+                                     fields=('detalle', 'fecha'))
+    
+    return HttpResponse(data, content_type='application/json')
+
+def createObservacionPaciente(request):
+      
+    observacion = ObservacionPaciente.objects.create(detalle=request.POST.get('detalle'), paciente_id=request.POST.get('id'))
+    observacion.save()
+    
+    messages.success(request, "Observación agregada con éxito")
+    return redirect ('/home/pacientes/index')
 
 
 class Login(FormView):
