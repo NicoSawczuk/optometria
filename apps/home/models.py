@@ -47,5 +47,6 @@ class Turno(models.Model):
     medico = models.ForeignKey(Medico, verbose_name="Medico", on_delete=models.CASCADE)
     fecha = models.CharField(blank = False, null = True,max_length = 10)
     detalle = models.TextField(blank = False, null = True)
+    activo = models.BooleanField(default=True)
     
     

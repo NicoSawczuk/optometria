@@ -18,6 +18,7 @@
                     <th scope="col">Medico</th>
                     <th scope="col">F. del turno</th>
                     <th scope="col">Detalle</th>
+                    <th scope="col">Estado</th>
                     <th scope="col" class="text-right">Opciones</th>
                 </tr>
             </thead>
@@ -28,7 +29,11 @@
                     <td>{{turno.medico.nombre}} {{turno.medico.apellido}}</td>
                     <td>{{turno.fecha}}</td>
                     <td>{{turno.detalle}}</td>
-
+                    {%if turno.activo%}
+                        <td><span class="badge badge-danger">Sin atender</span></td>
+                    {%else%}
+                        <td><span class="badge badge-success">Atendido</span></td>
+                    {%endif%}
                     <td class="text-right">
                         <a title="Editar" class="btn btn-light btn-sm" href="/home/turnos/edit/{{turno.id}}"><i
                                 class="fal fa-edit fa-lg"></i></a>

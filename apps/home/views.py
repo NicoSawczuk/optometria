@@ -15,6 +15,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from .models import *
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from datetime import datetime
 
 
 # Create your views here.
@@ -26,7 +27,15 @@ def home (request):
 
 
 def indexPacientes (request):
-    pacientes = Paciente.objects.all()
+    #Si es medico
+    if(request.user.groups.filter(name='Profesional medico').exists()):
+        turnos = Turno.objects.filter(medico_id=request.user.medico.id, activo=True)
+        print(turnos)
+        pacientes = []
+        for turno in turnos:
+            pacientes.append(turno.paciente)
+    else:
+        pacientes = Paciente.objects.all()
     return render (request, 'pacientes/index.html',{'pacientes':pacientes})
 
 
@@ -72,6 +81,10 @@ def createObservacionPaciente(request):
     observacion = ObservacionPaciente.objects.create(detalle=request.POST.get('detalle'), paciente_id=request.POST.get('id'))
     observacion.save()
     
+    myDate = datetime.now()
+    formatedDate = myDate.strftime("%Y-%m-%d")
+    Turno.objects.filter(paciente_id=request.POST.get('id'), fecha=formatedDate).update(activo=False)
+    
     messages.success(request, "Observación agregada con éxito")
     return redirect ('/home/pacientes/index')
 
@@ -86,7 +99,7 @@ def createTurno (request):
     if request.method == 'GET':
         return render (request, 'turnos/create.html',{'medicos':medicos, 'pacientes':pacientes})
     else:
-        if (Turno.objects.filter(paciente_id = request.POST.get('paciente'),fecha = request.POST.get('fecha')).exists()):
+        if (Turno.objects.filter(paciente_id = request.POST.get('paciente'),fecha = request.POST.get('fecha'), activo=True).exists()):
             messages.error(request, 'El paciente ya tiene asignado un turno en el dia seleccionado')
             return redirect ('/home/turnos/index')
         else:
