@@ -16,7 +16,7 @@ class Medico(models.Model):
         ordering = ['nombre']
     
     def __str__(self):
-        return self.nombre
+        return self.nombre + ' ' + self.apellido
     
     
 class Paciente(models.Model):
@@ -33,13 +33,21 @@ class Paciente(models.Model):
         ordering = ['nombre']
     
     def __str__(self):
-        return self.nombre
+        return self.nombre + ' ' + self.apellido
     
 class ObservacionPaciente(models.Model):
     id = models.AutoField(primary_key = True)
     detalle = models.TextField(blank = False, null = True)
     paciente = models.ForeignKey(Paciente, verbose_name="Paciente", on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'ObservacionPaciente'
+        verbose_name_plural = 'ObservacionesPacientes'
+        ordering = ['fecha']
+    
+    def __str__(self):
+        return 'Observacion '+ self.paciente.nombre +' '+ self.paciente.apellido
     
 class Turno(models.Model):
     id = models.AutoField(primary_key = True)
@@ -49,4 +57,11 @@ class Turno(models.Model):
     detalle = models.TextField(blank = False, null = True)
     activo = models.BooleanField(default=True)
     
+    class Meta:
+        verbose_name = 'Turno'
+        verbose_name_plural = 'Turnos'
+        ordering = ['id']
+    
+    def __str__(self):
+        return 'Turno '+ self.paciente.nombre +' '+ self.paciente.apellido
     
