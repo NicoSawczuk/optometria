@@ -33,7 +33,8 @@ def indexPacientes (request):
         print(turnos)
         pacientes = []
         for turno in turnos:
-            pacientes.append(turno.paciente)
+            if not(turno.paciente in pacientes):
+                pacientes.append(turno.paciente)
     else:
         pacientes = Paciente.objects.all()
     return render (request, 'pacientes/index.html',{'pacientes':pacientes})

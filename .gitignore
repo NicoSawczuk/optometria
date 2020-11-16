@@ -5,5 +5,5 @@ __pycache__/
 
 # Database stuff
 *.sqlite3
-migrations/
+**/migrations/*
 db.sqlite3
