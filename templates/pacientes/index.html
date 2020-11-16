@@ -33,7 +33,7 @@
                         <a title="Editar" class="btn btn-light btn-sm"
                             href="/home/pacientes/edit/{{paciente.id}}"><i class="fal fa-edit fa-lg"></i></a>
                         <a title="Observaciones" class="btn btn-light btn-sm"
-                            onclick="openModal('{{paciente.id}}')"><i class="fal fa-book-medical fa-lg"></i></a>
+                            onclick="openModalObservacion('{{paciente.id}}')"><i class="fal fa-book-medical fa-lg"></i></a>
                     </td>
                 </tr>
                 {%endfor%}
@@ -50,22 +50,6 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <a class="btn btn-success btn-sm text-white mb-2" onClick="mostrarFormObservacion()">Nueva
-                    observación</a>
-                <div class="form-group row" id="formNuevaObservacion" style="display: none;">
-                    <form method="POST" action="/home/pacientes/observaciones/create">
-                        {% csrf_token %}
-                        <div class="form-group col-md-7">
-                            <label for="nombre" class=" col-form-label text-md-right">Detalle</label>
-                            <textarea id="detalle" type="text" class="form-control" name="detalle" value=""
-                                placeholder="Ingrese el detalle" pattern="[A-Za-z]{}"
-                                required></textarea>
-                            <input type="hidden" id="inputNuevaObservacion" name="id">
-                            <button type="submit" class="btn btn-sm btn-primary mt-1"><i class="fal fa-check"></i>
-                                Guardar</button>
-                        </div>
-                    </form>
-                </div>
                 <ul class="list-group list-group-flush">
                     <div id="observaciones"></div>
 
@@ -98,7 +82,7 @@
 
 <script>
 
-    function openModal(id) {
+    function openModalObservacion(id) {
         $('#observacionesModal').modal('show');
 
         $('#inputNuevaObservacion').val(id)
@@ -125,14 +109,6 @@
 
             },
         });
-    }
-
-    function mostrarFormObservacion() {
-        if ($("#formNuevaObservacion").css("display") === 'block') {
-            $("#formNuevaObservacion").css("display", "none");
-        } else {
-            $("#formNuevaObservacion").css("display", "block");
-        }
     }
 
 </script>

@@ -29,7 +29,7 @@ def home (request):
 def indexPacientes (request):
     #Si es medico
     if(request.user.groups.filter(name='Profesional medico').exists()):
-        turnos = Turno.objects.filter(medico_id=request.user.medico.id, activo=True)
+        turnos = Turno.objects.filter(medico_id=request.user.medico.id)
         print(turnos)
         pacientes = []
         for turno in turnos:
@@ -87,7 +87,7 @@ def createObservacionPaciente(request):
     Turno.objects.filter(paciente_id=request.POST.get('id'), fecha=formatedDate).update(activo=False)
     
     messages.success(request, "Observación agregada con éxito")
-    return redirect ('/home/pacientes/index')
+    return redirect ('/home/turnos/index')
 
 
 def indexTurnos (request):
