@@ -135,6 +135,18 @@ def deleteTurno(request,pk):
     messages.success(request, "Turno eliminado con exito")
     return redirect ('/home/turnos/index')
 
+def indexProductos (request):
+    pass
+
+def createProducto (request):
+    pass
+
+def editProducto (request, pk):
+    pass
+
+def deleteProducto (request, pk):
+    pass
+
 class Login(FormView):
     template_name='login.html'
     form_class = LoginForm
