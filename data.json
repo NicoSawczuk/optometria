@@ -1,0 +1,168 @@
+[
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+      "name": "Gerencia",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": {
+      "name": "Profesional medico",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 3,
+    "fields": {
+      "name": "Secretaria",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 4,
+    "fields": {
+      "name": "Taller",
+      "permissions": []
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 5,
+    "fields": {
+      "name": "Ventas",
+      "permissions": []
+    }
+  },
+  {
+    "model": "home.valorcaracteristicaproducto",
+    "pk": 6,
+    "fields": {
+      "valor": "Izquierda"
+    }
+  },
+  {
+    "model": "home.valorcaracteristicaproducto",
+    "pk": 7,
+    "fields": {
+      "valor": "Derecha"
+    }
+  },
+  {
+    "model": "home.valorcaracteristicaproducto",
+    "pk": 8,
+    "fields": {
+      "valor": "Lejos"
+    }
+  },
+  {
+    "model": "home.valorcaracteristicaproducto",
+    "pk": 9,
+    "fields": {
+      "valor": "Cerca"
+    }
+  },
+  {
+    "model": "home.valorcaracteristicaproducto",
+    "pk": 10,
+    "fields": {
+      "valor": "Si"
+    }
+  },
+  {
+    "model": "home.valorcaracteristicaproducto",
+    "pk": 11,
+    "fields": {
+      "valor": "No"
+    }
+  },
+  {
+    "model": "home.caracteristicaproducto",
+    "pk": 12,
+    "fields": {
+      "caracteristica": "Vision",
+      "valor": [8, 9]
+    }
+  },
+  {
+    "model": "home.caracteristicaproducto",
+    "pk": 13,
+    "fields": {
+      "caracteristica": "Lado",
+      "valor": [6, 7]
+    }
+  },
+  {
+    "model": "home.caracteristicaproducto",
+    "pk": 14,
+    "fields": {
+      "caracteristica": "Armazon",
+      "valor": [10, 11]
+    }
+  },
+  {
+    "model": "home.tipodepago",
+    "pk": 15,
+    "fields": {
+      "descripcion": "Tarjeta de credito"
+    }
+  },
+  {
+    "model": "home.tipodepago",
+    "pk": 16,
+    "fields": {
+      "descripcion": "Debito"
+    }
+  },
+  {
+    "model": "home.tipodepago",
+    "pk": 17,
+    "fields": {
+      "descripcion": "Billetera virtual"
+    }
+  },
+  {
+    "model": "home.tipodepago",
+    "pk": 18,
+    "fields": {
+      "descripcion": "Efectivo"
+    }
+  },
+  {
+    "model": "home.estadopedido",
+    "pk": 19,
+    "fields": {
+      "nombre": "Pendiente",
+      "descripcion": "Estado inicial del pedido"
+    }
+  },
+  {
+    "model": "home.estadopedido",
+    "pk": 20,
+    "fields": {
+      "nombre": "Pedido",
+      "descripcion": "El rol de ventas confirma el pedido y lo pasa a estado Pedido"
+    }
+  },
+  {
+    "model": "home.estadopedido",
+    "pk": 21,
+    "fields": {
+      "nombre": "Taller",
+      "descripcion": "El rol de ventas pasa al estado Taller"
+    }
+  },
+  {
+    "model": "home.estadopedido",
+    "pk": 22,
+    "fields": {
+      "nombre": "Finalizado",
+      "descripcion": "Pedido finalizado"
+    }
+  }
+]
