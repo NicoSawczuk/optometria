@@ -136,7 +136,8 @@ def deleteTurno(request,pk):
     return redirect ('/home/turnos/index')
 
 def indexProductos (request):
-    pass
+    productos = Producto.objects.all()
+    return render (request, 'productos/index.html',{'productos':productos})
 
 def createProducto (request):
     pass
