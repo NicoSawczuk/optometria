@@ -148,6 +148,21 @@ def editProducto (request, pk):
 def deleteProducto (request, pk):
     pass
 
+
+
+def indexPedidos (request):
+    pedidos = Pedido.objects.all()
+    return render (request, 'pedidos/index.html',{'pedidos':pedidos})
+
+def createPedido (request):
+    pass
+
+def editPedido (request, pk):
+    pass
+
+def deletePedido (request, pk):
+    pass
+
 class Login(FormView):
     template_name='login.html'
     form_class = LoginForm
