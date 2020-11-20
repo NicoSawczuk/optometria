@@ -152,7 +152,8 @@ def deleteProducto (request, pk):
 
 def indexPedidos (request):
     pedidos = Pedido.objects.all()
-    return render (request, 'pedidos/index.html',{'pedidos':pedidos})
+    estados = EstadoPedido.objects.all()
+    return render (request, 'pedidos/index.html',{'pedidos':pedidos, 'estados': estados})
 
 def createPedido (request):
     pass
@@ -162,6 +163,13 @@ def editPedido (request, pk):
 
 def deletePedido (request, pk):
     pass
+
+def cambiarEstadoPedido (request):
+    Pedido.objects.filter(id=request.POST.get('pedido')).update(estado_id=request.POST.get('estado'))
+    
+    messages.success(request, "Estado del pedido modificado con exito")
+    return redirect ('/home/pedidos/index')
+    
 
 class Login(FormView):
     template_name='login.html'
