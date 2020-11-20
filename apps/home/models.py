@@ -81,6 +81,7 @@ class EstadoPedido(models.Model):
     id = models.AutoField(primary_key = True)
     nombre = models.CharField(max_length = 60, blank = False, null = True)
     descripcion = models.CharField(max_length = 60, blank = False, null = True)
+    colorEtiqueta = models.CharField(max_length = 7, blank = False, null = True)
 
     class Meta:
         verbose_name = 'EstadoPedido'
@@ -136,7 +137,7 @@ class Producto(models.Model):
 class Pedido(models.Model):
     id = models.AutoField(primary_key = True)
     paciente = models.ForeignKey(Paciente, verbose_name="Paciente", on_delete=models.CASCADE)
-    producto = models.ForeignKey(Producto, verbose_name="Producto", on_delete=models.CASCADE)
+    producto = models.ManyToManyField(Producto, verbose_name="Producto")
     subtotal = models.DecimalField(max_digits=5, decimal_places=2)
     tipoDePago = models.ForeignKey(TipoDePago, verbose_name="TipoDePago", on_delete=models.CASCADE)
     estado = models.ForeignKey(EstadoPedido, verbose_name="EstadoPedido", on_delete=models.CASCADE)
@@ -145,7 +146,7 @@ class Pedido(models.Model):
     class Meta:
         verbose_name = 'Pedido'
         verbose_name_plural = 'Pedidos'
-        ordering = ['producto']
+        ordering = ['id']
     
     def __str__(self):
-        return 'Pedido '+ self.paciente.nombre +' '+ self.paciente.apellido + ' (' + self.producto.nombre + ') '
+        return 'Pedido '+ self.paciente.nombre +' '+ self.paciente.apellido
