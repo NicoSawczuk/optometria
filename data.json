@@ -138,7 +138,8 @@
     "pk": 19,
     "fields": {
       "nombre": "Pendiente",
-      "descripcion": "Estado inicial del pedido"
+      "descripcion": "Estado inicial del pedido",
+      "colorEtiqueta": "#d81b60"
     }
   },
   {
@@ -146,7 +147,8 @@
     "pk": 20,
     "fields": {
       "nombre": "Pedido",
-      "descripcion": "El rol de ventas confirma el pedido y lo pasa a estado Pedido"
+      "descripcion": "El rol de ventas confirma el pedido y lo pasa a estado Pedido",
+      "colorEtiqueta": "#ffc107"
     }
   },
   {
@@ -154,7 +156,8 @@
     "pk": 21,
     "fields": {
       "nombre": "Taller",
-      "descripcion": "El rol de ventas pasa al estado Taller"
+      "descripcion": "El rol de ventas pasa al estado Taller",
+      "colorEtiqueta": "#17a2b8"
     }
   },
   {
@@ -162,7 +165,8 @@
     "pk": 22,
     "fields": {
       "nombre": "Finalizado",
-      "descripcion": "Pedido finalizado"
+      "descripcion": "Pedido finalizado",
+      "colorEtiqueta": "#28a745"
     }
   }
 ]
