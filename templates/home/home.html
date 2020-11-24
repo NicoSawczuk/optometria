@@ -10,8 +10,13 @@
     <link rel="stylesheet" href=" {% static 'fontawesome/css/all.min.css' %}">
 
     <link rel="stylesheet" href=" {% static 'datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href=" {% static 'datatables-bs4/css/responsive.bootstrap.min.css' %}">
 
     <link rel="stylesheet" href=" {% static 'toastr/toastr.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'select2/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+
     <title> {%block titulo%} Home {%endblock titulo%}</title>
 </head>
 
@@ -70,8 +75,12 @@
     <script src=" {% static 'datatables/jquery.dataTables.min.js' %}"></script>
     <script src=" {% static 'datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
     <script src=" {% static 'datatables/incluirDatatable.js' %}"></script>
+    <script src=" {% static 'datatables/dataTables.responsive.min.js' %}"></script>
+    <script src=" {% static 'datatables/responsive.bootstrap.min.js' %}"></script>
 
     <script src=" {% static 'toastr/toastr.min.js' %}"></script>
+
+    <script src="{% static 'select2/js/select2.full.min.js' %}"></script>
     {%endblock scripts%}
 
 
