@@ -156,8 +156,27 @@ def indexPedidos (request):
     return render (request, 'pedidos/index.html',{'pedidos':pedidos, 'estados': estados})
 
 def createPedido (request):
-    pass
-
+    if request.method == 'GET':
+        productos = Producto.objects.all()
+        tiposDePago = TipoDePago.objects.all()
+        pacientes = Paciente.objects.all()
+        
+        return render (request, 'pedidos/create.html',{'productos':productos, 'tiposDePago': tiposDePago, 'pacientes': pacientes})
+    else:
+        
+        pedido = Pedido.objects.create(
+            paciente = Paciente.objects.get(id=request.POST.get('paciente')),
+            subtotal = request.POST.get('subtotal'),
+            estado = EstadoPedido.objects.get(nombre='Pendiente'),
+            tipoDePago = TipoDePago.objects.get(id=request.POST.get('tipo_pago'))
+        )
+        productos = request.POST.getlist('productos')
+        for producto in productos:
+            pedido.producto.add(Producto.objects.get(id=producto))
+        pedido.save()
+        messages.success(request, "Pedido agregado con exito")
+        return redirect ('/home/pedidos/index')
+    
 def editPedido (request, pk):
     pass
 
