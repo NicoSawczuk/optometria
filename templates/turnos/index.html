@@ -32,7 +32,7 @@
                                 placeholder="dd/mm/yyyy">
                         </div>
                         <div class="col-md-3">
-                            <label for="gimnasios" class=" col-form-label text-md-right">Pacientes</label>
+                            <label for="pacientes" class=" col-form-label text-md-right">Pacientes</label>
                             <select class="select2" multiple="multiple" style="width: 100%;" id="pacientes">
                                 {% for paciente in pacientes %}
                                 <option value="{{paciente.nombre}} {{paciente.apellido}}">
@@ -42,12 +42,10 @@
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <label for="especialidades" class=" col-form-label text-md-right">Medicos</label>
-                            <select class="select2" multiple="multiple" style="width: 100%;" id="medicos">
-                                {% for medico in medicos %}
-                                <option value="{{medico.nombre}} {{medico.apellido}}">
-                                    {{medico.nombre}} {{medico.apellido}}
-                                </option>
+                            <label for="estados" class=" col-form-label text-md-right">Estados</label>
+                            <select class="select2" multiple="multiple" style="width: 100%;" id="estados">
+                                {% for estado in estados %}
+                                <option value="{{estado.nombre}}">{{estado.nombre}}</option>
                                 {%endfor%}
                             </select>
                         </div>
@@ -78,10 +76,8 @@
                         <td>{{turno.medico.nombre}} {{turno.medico.apellido}}</td>
                         <td>{{turno.getFecha}}</td>
                         <td>{{turno.detalle}}</td>
-                        <td>
-                            <span style="background-color:{{turno.estado.colorEtiqueta}}; color: white;" class="badge">
-                                {{turno.estado.nombre}}
-                            </span>
+                        <td style="background-color:{{turno.estado.colorEtiqueta}}; color: white;">
+                            {{turno.estado.nombre}}
                         </td>
                         <td class="text-right">
                             <a title="Observaciones" class="btn btn-light btn-sm"
@@ -298,7 +294,7 @@
                 {
                     extend: 'pdfHtml5',
                     exportOptions: {
-                        columns: [0, 1, 2, 3]
+                        columns: [0, 1, 2, 3, 4]
                     },
                     className: 'btn btn-secondary buttons-pdf buttons-html5',
                     text: 'PDF',
@@ -396,20 +392,6 @@
                             }
                         });
 
-                        //Funcion que pone cada columna en tamaño *, para que se ajuste automagicamente. cuenta cada <td> del data table y genera array del tipo [*,*,*,..,n] y establece dicho array como width.
-                        var colCount = new Array();
-                        $("#datatable").find('tbody tr:first-child td').each(function () {
-                            if ($(this).attr('colspan')) {
-                                for (var j = 1; j <= $(this).attr('colspan'); $j++) {
-                                    colCount.push('*');
-                                }
-                            } else { colCount.push('*'); }
-                        });
-                        //console.log(colCount);
-                        colCount.push('*'); //Le pongo uno mas porque tengo un td oculto (el id)
-
-                        //doc.content[0].table.widths = colCount;
-
                         //Es equivalente a: 
                         doc.content[0].table.widths = [100, 100, 70, 120, 70];
 
@@ -458,8 +440,8 @@
                         doc.content[0].layout = objLayout;
                     },
                     exportOptions: {
-                        columns: ":visible"
-                    }
+                        columns: [0, 1, 2, 3, 4]
+                    },
                 }
             ],
             dom: 'lrfBtip',
@@ -521,7 +503,7 @@
             filtro3 = $('#pacientes').val();
 
             var filtro4 = [];
-            filtro4 = $('#medicos').val();
+            filtro4 = $('#estados').val();
 
             var filtro1 = $('#desde').val();
             var filtro1Titulo = moment(filtro1).format('DD/MM/YYYY');
@@ -553,8 +535,8 @@
                 console.log(pacientes);
             }
             if (filtro4 != "") {
-                var medicos = filtro4;
-                console.log(medicos);
+                var estados = filtro4;
+                console.log(estados);
             }
             if (filtro1 != "") {
                 var desde = filtro1;
@@ -647,11 +629,11 @@
             }
             else if (filtro1 != "" && filtro2 != "" && filtro3 != "" && filtro4 != "") {
                 console.log('filtro 4');
-                var filtros = "F. desde: " + filtro1Titulo + ", F. hasta: " + filtro2Titulo + ", Pacientes: " + String(filtro3) + " y Medicos: " + String(filtro4);
+                var filtros = "F. desde: " + filtro1Titulo + ", F. hasta: " + filtro2Titulo + ", Pacientes: " + String(filtro3) + " y Estados: " + String(filtro4);
                 var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
                     var datearray1 = data[2].split("/");
                     var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
-                    if (desde <= newdate1 && hasta >= newdate1 && pacientes.includes(data[0]) && medicos.includes(data[1])) {
+                    if (desde <= newdate1 && hasta >= newdate1 && pacientes.includes(data[0]) && estados.includes(data[4])) {
                         return true;
 
                     } else {
@@ -667,11 +649,11 @@
             }
             else if (filtro1 == "" && filtro2 != "" && filtro3 != "" && filtro4 != "") {
                 console.log('filtro 5');
-                var filtros = "F. hasta: " + filtro2Titulo + ", Pacientes: " + String(filtro3) + " y Medicos: " + String(filtro4);
+                var filtros = "F. hasta: " + filtro2Titulo + ", Pacientes: " + String(filtro3) + " y Estados: " + String(filtro4);
                 var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
                     var datearray1 = data[2].split("/");
                     var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
-                    if (hasta >= newdate1 && pacientes.includes(data[0]) && medicos.includes(data[1])) {
+                    if (hasta >= newdate1 && pacientes.includes(data[0]) && estados.includes(data[4])) {
                         return true;
 
                     } else {
@@ -687,11 +669,11 @@
             }
             else if (filtro1 == "" && filtro2 != "" && filtro3 == "" && filtro4 != "") {
                 console.log('filtro 6');
-                var filtros = "F. hasta: " + filtro2Titulo + " y Medicos: " + String(filtro4);
+                var filtros = "F. hasta: " + filtro2Titulo + " y Estados: " + String(filtro4);
                 var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
                     var datearray1 = data[2].split("/");
                     var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
-                    if (hasta >= newdate1 && medicos.includes(data[1])) {
+                    if (hasta >= newdate1 && estados.includes(data[4])) {
                         return true;
 
                     } else {
@@ -728,9 +710,9 @@
 
             else if (filtro1 == "" && filtro2 == "" && filtro3 != "" && filtro4 != "") {
                 console.log('filtro 8');
-                var filtros = "Pacientes: " + String(filtro3) + " y Medicos: " + String(filtro4);
+                var filtros = "Pacientes: " + String(filtro3) + " y Estados: " + String(filtro4);
                 var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
-                    if (pacientes.includes(data[0]) && medicos.includes(data[1])) {
+                    if (pacientes.includes(data[0]) && estados.includes(data[4])) {
                         return true;
 
                     } else {
@@ -805,9 +787,9 @@
 
             else if (filtro1 == "" && filtro2 == "" && filtro3 == "" && filtro4 != "") {
                 console.log('filtro 12');
-                var filtros = "Medicos: " + String(filtro4) + ".";
+                var filtros = "Estados: " + String(filtro4) + ".";
                 var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
-                    if (medicos.includes(data[1])) {
+                    if (estados.includes(data[4])) {
                         return true;
 
                     } else {
@@ -823,11 +805,11 @@
             }
             else if (filtro1 != "" && filtro2 == "" && filtro3 == "" && filtro4 != "") {
                 console.log('filtro 13');
-                var filtros = "F. desde: " + filtro1Titulo + " y Medicos: " + String(filtro4);
+                var filtros = "F. desde: " + filtro1Titulo + " y Estados: " + String(filtro4);
                 var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
                     var datearray1 = data[2].split("/");
                     var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
-                    if (desde <= newdate1 && medicos.includes(data[1])) {
+                    if (desde <= newdate1 && estados.includes(data[4])) {
                         return true;
 
                     } else {
@@ -843,11 +825,11 @@
             }
             else if (filtro1 != "" && filtro2 != "" && filtro3 == "" && filtro4 != "") {
                 console.log('filtro 14');
-                var filtros = "F. desde: " + filtro1Titulo + ", F. hasta: " + filtro2Titulo + " y Medicos: " + String(filtro4);
+                var filtros = "F. desde: " + filtro1Titulo + ", F. hasta: " + filtro2Titulo + " y Estados: " + String(filtro4);
                 var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
                     var datearray1 = data[2].split("/");
                     var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
-                    if (desde <= newdate1 && hasta >= newdate1 && medicos.includes(data[1])) {
+                    if (desde <= newdate1 && hasta >= newdate1 && estados.includes(data[4])) {
                         return true;
 
                     } else {
@@ -863,11 +845,11 @@
             }
             else if (filtro1 != "" && filtro2 == "" && filtro3 != "" && filtro4 != "") {
                 console.log('filtro 15');
-                var filtros = "F. desde: " + filtro1Titulo + ", Pacientes: " + String(filtro3) + " y Medicos: " + String(filtro4);
+                var filtros = "F. desde: " + filtro1Titulo + ", Pacientes: " + String(filtro3) + " y Estados: " + String(filtro4);
                 var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
                     var datearray1 = data[2].split("/");
                     var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
-                    if (desde <= newdate1 && pacientes.includes(data[0]) && medicos.includes(data[1])) {
+                    if (desde <= newdate1 && pacientes.includes(data[0]) && estados.includes(data[4])) {
                         return true;
 
                     } else {

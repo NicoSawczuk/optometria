@@ -109,8 +109,8 @@ def registrarFalta (request,pk):
 def indexTurnos (request):
     turnos = Turno.objects.all()
     pacientes = Paciente.objects.all()
-    medicos = Medico.objects.all()
-    return render (request, 'turnos/index.html',{'turnos':turnos, 'pacientes': pacientes, 'medicos': medicos})
+    estados = EstadoTurno.objects.all()
+    return render (request, 'turnos/index.html',{'turnos':turnos, 'pacientes': pacientes, 'estados': estados})
 
 def createTurno (request):
     medicos = Medico.objects.all()
