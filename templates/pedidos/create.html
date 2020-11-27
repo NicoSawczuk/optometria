@@ -85,6 +85,9 @@
     function cargarSubtotal() {
         productos = $('.select2').val()
         var subtotal = 0
+        if (productos.length == 0){
+            $('#subtotal').val(0)
+        }
         productos.map((producto) => {
             subtotal += parseFloat($('#'+producto).val())
             $('#subtotal').val(subtotal)
