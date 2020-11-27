@@ -150,3 +150,6 @@ class Pedido(models.Model):
     
     def __str__(self):
         return 'Pedido '+ self.paciente.nombre +' '+ self.paciente.apellido
+    
+    def getProductos(self):
+        return self.producto.all()

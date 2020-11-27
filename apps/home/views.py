@@ -178,7 +178,30 @@ def createPedido (request):
         return redirect ('/home/pedidos/index')
     
 def editPedido (request, pk):
-    pass
+    pedido = Pedido.objects.get(id=pk)
+    productos = Producto.objects.all()
+    tiposDePago = TipoDePago.objects.all()
+    pacientes = Paciente.objects.all()
+    if request.method == 'GET':
+        return render (request, 'pedidos/edit.html',{'pedido':pedido, 'productos':productos, 'pacientes':pacientes, 'tiposDePago':tiposDePago})
+    else:
+        pedido = Pedido.objects.filter(id=pk).update(
+                paciente = Paciente.objects.get(id=request.POST.get('paciente')),
+                subtotal = request.POST.get('subtotal'),
+                estado = EstadoPedido.objects.get(nombre='Pendiente'),
+                tipoDePago = TipoDePago.objects.get(id=request.POST.get('tipo_pago'))
+            )
+        pedido = Pedido.objects.get(id=pk)
+        productos = request.POST.getlist('productos')
+        print(pedido.getProductos())
+        for producto in pedido.getProductos():
+            pedido.producto.remove(producto)
+        
+        for producto in productos:
+            pedido.producto.add(Producto.objects.get(id=producto))
+        pedido.save()
+        messages.success(request, "Pedido modificado con exito")
+        return redirect ('/home/pedidos/index')
 
 def deletePedido (request, pk):
     pass
