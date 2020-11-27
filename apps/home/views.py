@@ -188,7 +188,6 @@ def editPedido (request, pk):
         pedido = Pedido.objects.filter(id=pk).update(
                 paciente = Paciente.objects.get(id=request.POST.get('paciente')),
                 subtotal = request.POST.get('subtotal'),
-                estado = EstadoPedido.objects.get(nombre='Pendiente'),
                 tipoDePago = TipoDePago.objects.get(id=request.POST.get('tipo_pago'))
             )
         pedido = Pedido.objects.get(id=pk)
@@ -204,7 +203,9 @@ def editPedido (request, pk):
         return redirect ('/home/pedidos/index')
 
 def deletePedido (request, pk):
-    pass
+    Pedido.objects.get(id=pk).delete()
+    messages.success(request, "Pedido eliminado con exito")
+    return redirect ('/home/pedidos/index')
 
 def cambiarEstadoPedido (request):
     Pedido.objects.filter(id=request.POST.get('pedido')).update(estado_id=request.POST.get('estado'))
