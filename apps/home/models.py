@@ -65,6 +65,9 @@ class Turno(models.Model):
     def __str__(self):
         return 'Turno '+ self.paciente.nombre +' '+ self.paciente.apellido
     
+    def getFecha(self):
+        return self.fecha[8:10] +'/'+ self.fecha[5:7] +'/'+ self.fecha[0:4]
+    
 class TipoDePago(models.Model):
     id = models.AutoField(primary_key = True)
     descripcion = models.CharField(max_length = 60, blank = False, null = True)

@@ -92,7 +92,9 @@ def createObservacionPaciente(request):
 
 def indexTurnos (request):
     turnos = Turno.objects.all()
-    return render (request, 'turnos/index.html',{'turnos':turnos})
+    pacientes = Paciente.objects.all()
+    medicos = Medico.objects.all()
+    return render (request, 'turnos/index.html',{'turnos':turnos, 'pacientes': pacientes, 'medicos': medicos})
 
 def createTurno (request):
     medicos = Medico.objects.all()

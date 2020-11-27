@@ -11,42 +11,92 @@
         <a class="btn btn-primary btn-sm float-right text-white" href="/home/turnos/create">Nuevo</a>
     </div>
     <div class="card-body card-block">
-        <table id="datatable" class="table table-striped table-bordered dataTable">
-            <thead>
-                <tr>
-                    <th scope="col">Paciente</th>
-                    <th scope="col">Medico</th>
-                    <th scope="col">F. del turno</th>
-                    <th scope="col">Detalle</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col" class="text-right">Opciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for turno in turnos %}
-                <tr>
-                    <td>{{turno.paciente.nombre}} {{turno.paciente.apellido}}</td>
-                    <td>{{turno.medico.nombre}} {{turno.medico.apellido}}</td>
-                    <td>{{turno.fecha}}</td>
-                    <td>{{turno.detalle}}</td>
-                    {%if turno.activo%}
-                    <td><span class="badge badge-danger">Sin atender</span></td>
-                    {%else%}
-                    <td><span class="badge badge-success">Atendido</span></td>
-                    {%endif%}
-                    <td class="text-right">
-                        <a title="Observaciones" class="btn btn-light btn-sm"
-                            onclick="openModalObservacion('{{turno.paciente.id}}','{{turno.activo}}')"><i
-                                class="fal fa-book-medical fa-lg"></i></a>
-                        <a title="Editar" class="btn btn-light btn-sm" href="/home/turnos/edit/{{turno.id}}"><i
-                                class="fal fa-edit fa-lg"></i></a>
-                        <a title="Eliminar turno" onclick="openModalDelete('{{turno.id}}')"
-                            class="btn btn-danger btn-sm"><i class="fal fa-trash fa-lg"></i></a>
-                    </td>
-                </tr>
-                {%endfor%}
-            </tbody>
-        </table>
+        <div class="mt-1 mr-1">
+            <div class="float-right">
+                <button style="padding-bottom: 2px;" title="Desplegar filtros" data-toggle="collapse"
+                    data-target="#demo" class="btn primary bg-light"><i class="far fa-filter"></i></button>
+            </div>
+            <div class="ml-1">
+                <div id="demo" class="collapse">
+                    <div class="row mb-2">
+                        <div class="col-md-2">
+                            <label for="desde" class="col-form-label text-md-right">Desde</label>
+                            <input type="date" id="desde" class="form-control" data-inputmask-alias="datetime"
+                                data-inputmask-inputformat="dd/mm/yyyy" data-mask="" im-insert="false"
+                                placeholder="dd/mm/yyyy">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="hasta" class="col-form-label text-md-right">Hasta</label>
+                            <input type="date" id="hasta" class="form-control" data-inputmask-alias="datetime"
+                                data-inputmask-inputformat="dd/mm/yyyy" data-mask="" im-insert="false"
+                                placeholder="dd/mm/yyyy">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="gimnasios" class=" col-form-label text-md-right">Pacientes</label>
+                            <select class="select2" multiple="multiple" style="width: 100%;" id="pacientes">
+                                {% for paciente in pacientes %}
+                                <option value="{{paciente.nombre}} {{paciente.apellido}}">
+                                    {{paciente.nombre}} {{paciente.apellido}}
+                                </option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="especialidades" class=" col-form-label text-md-right">Medicos</label>
+                            <select class="select2" multiple="multiple" style="width: 100%;" id="medicos">
+                                {% for medico in medicos %}
+                                <option value="{{medico.nombre}} {{medico.apellido}}">
+                                    {{medico.nombre}} {{medico.apellido}}
+                                </option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <label for="" class="col-form-label text-md-right text-white">Filtro</label>
+                            <button id="filtrar" type="button" class="btn btn-dark">Filtrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <table id="datatable" class="table table-striped table-bordered dataTable">
+                <thead>
+                    <tr>
+                        <th scope="col">Paciente</th>
+                        <th scope="col">Medico</th>
+                        <th scope="col">F. del turno</th>
+                        <th scope="col">Detalle</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col" class="text-right">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for turno in turnos %}
+                    <tr>
+                        <td>{{turno.paciente.nombre}} {{turno.paciente.apellido}}</td>
+                        <td>{{turno.medico.nombre}} {{turno.medico.apellido}}</td>
+                        <td>{{turno.getFecha}}</td>
+                        <td>{{turno.detalle}}</td>
+                        {%if turno.activo%}
+                        <td><span class="badge badge-danger">Sin atender</span></td>
+                        {%else%}
+                        <td><span class="badge badge-success">Atendido</span></td>
+                        {%endif%}
+                        <td class="text-right">
+                            <a title="Observaciones" class="btn btn-light btn-sm"
+                                onclick="openModalObservacion('{{turno.paciente.id}}','{{turno.activo}}')"><i
+                                    class="fal fa-book-medical fa-lg"></i></a>
+                            <a title="Editar" class="btn btn-light btn-sm" href="/home/turnos/edit/{{turno.id}}"><i
+                                    class="fal fa-edit fa-lg"></i></a>
+                            <a title="Eliminar turno" onclick="openModalDelete('{{turno.id}}')"
+                                class="btn btn-danger btn-sm"><i class="fal fa-trash fa-lg"></i></a>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 <div id="observacionesModal" class="modal fade bd-example-modal-xl" role="dialog">
@@ -108,6 +158,7 @@
         </div>
     </div>
 </div>
+<input type="hidden" id="filtros" value="Ningún filtro aplicado.">
 
 {%endblock body%}
 {%block scripts%}
@@ -126,6 +177,31 @@
 {%endif%}
 {% endfor %}
 {% endif %}
+
+<script>
+    $(function () {
+        $('.select2').select2()
+    });
+    //Controles de inputs de fechas e inicializacion de selects
+    $(function () {
+        //Datemask dd/mm/yyyy
+        $('#desde').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' });
+        $('#hasta').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' });
+        document.getElementById("desde").max = new Date().toISOString().split("T")[0];
+        document.getElementById("hasta").max = new Date().toISOString().split("T")[0];
+
+        $("#desde").change(function () {
+            var fecha = $(this).val();
+            document.getElementById("hasta").min = fecha;
+        });
+        $("#hasta").change(function () {
+            var fecha = $(this).val();
+            document.getElementById("desde").max = fecha;
+        });
+    })
+</script>
+
+
 
 <script>
     function openModalObservacion(id, activo) {
@@ -177,5 +253,387 @@
         $('#formDelete').attr('action', '/home/turnos/delete/' + id);
     }
 
+</script>
+
+
+<script>
+  $(document).ready(function () {
+    var table = $('#datatable').DataTable();
+
+    //un boton con id filtrar
+    $('#filtrar').click(function () {
+
+
+      //aca se obtienen los valores
+      var filtro3 = [];
+      filtro3 = $('#pacientes').val();
+
+      var filtro4 = [];
+      filtro4 = $('#medicos').val();
+
+      var filtro1 = $('#desde').val();
+      var filtro1Titulo = moment(filtro1).format('DD/MM/YYYY');
+      if (filtro1 != "") {
+        filtro1 = moment(filtro1).format('YYYYMMDD');
+      }
+
+      var filtro2 = $('#hasta').val();
+      var filtro2Titulo = moment(filtro2).format('DD/MM/YYYY');
+      if (filtro2 != "") {
+        filtro2 = moment(filtro2).format('YYYYMMDD');
+      }
+
+      //no olvidarme de volver a poner (pop) las filas
+      //esto es por si se realizo algun filtro asi se vuelve a cargar el datatable
+
+      $.fn.dataTable.ext.search.pop(
+        function (settings, data, dataIndex) {
+          if (1) {
+            return true;
+          }
+          return false;
+        }
+      );
+      table.draw();
+
+      if (filtro3 != "") {
+        var pacientes = filtro3;
+        console.log(pacientes);
+      }
+      if (filtro4 != "") {
+        var medicos = filtro4;
+        console.log(medicos);
+      }
+      if (filtro1 != "") {
+        var desde = filtro1;
+        console.log(desde);
+      }
+      if (filtro2 != "") {
+        var hasta = filtro2;
+        console.log(hasta);
+      }
+      filtros = "";
+      if (filtro1 == "" && filtro2 == "" && filtro3 == "" && filtro4 == "") {
+        console.log('filtro 0');
+        var filtros = "Ningún filtro aplicado.";
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          if (true) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+      if (filtro1 != "" && filtro2 == "" && filtro3 == "" && filtro4 == "") {
+        console.log('filtro 1');
+        var filtros = "F. desde: " + filtro1Titulo+".";
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          var datearray1 = data[2].split("/");
+          var newdate1 =   datearray1[2] + datearray1[1] + datearray1[0];
+          if (desde <= newdate1) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+
+      else if (filtro1 != "" && filtro2 != "" && filtro3 == "" && filtro4 == "") {
+        console.log('filtro 2');
+        var filtros = "F. desde: " + filtro1Titulo+" y F. hasta: " + filtro2Titulo;
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          var datearray1 = data[2].split("/");
+          var newdate1 =   datearray1[2] + datearray1[1] + datearray1[0];
+          if (desde <= newdate1 && hasta >= newdate1) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+
+      else if (filtro1 != "" && filtro2 != "" && filtro3 != "" && filtro4 == "") {
+        console.log('filtro 3');
+        var filtros = "F. desde: " + filtro1Titulo+", F. hasta: " + filtro2Titulo +" y Pacientes: "+String(filtro3);
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          var datearray1 = data[2].split("/");
+          var newdate1 =   datearray1[2] + datearray1[1] + datearray1[0];
+          if (desde <= newdate1 && hasta >= newdate1 && pacientes.includes(data[0])) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+      else if (filtro1 != "" && filtro2 != "" && filtro3 != "" && filtro4 != "") {
+        console.log('filtro 4');
+        var filtros = "F. desde: " + filtro1Titulo+", F. hasta: " + filtro2Titulo +", Pacientes: "+String(filtro3) +" y Medicos: "+ String(filtro4);
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          var datearray1 = data[2].split("/");
+          var newdate1 =   datearray1[2] + datearray1[1] + datearray1[0];
+          if (desde <= newdate1 && hasta >= newdate1 && pacientes.includes(data[0]) && medicos.includes(data[1])) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+      else if (filtro1 == "" && filtro2 != "" && filtro3 != "" && filtro4 != "") {
+        console.log('filtro 5');
+        var filtros = "F. hasta: "+filtro2Titulo+", Pacientes: "+String(filtro3)+" y Medicos: "+String(filtro4); 
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          var datearray1 = data[2].split("/");
+          var newdate1 =   datearray1[2] + datearray1[1] + datearray1[0];
+          if (hasta >= newdate1 && pacientes.includes(data[0]) && medicos.includes(data[1])) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+      else if (filtro1 == "" && filtro2 != "" && filtro3 == "" && filtro4 != "") {
+        console.log('filtro 6');
+        var filtros = "F. hasta: "+filtro2Titulo+" y Medicos: "+String(filtro4);
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          var datearray1 = data[2].split("/");
+          var newdate1 =   datearray1[2] + datearray1[1] + datearray1[0];
+          if (hasta >= newdate1 && medicos.includes(data[1])) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+      else if (filtro1 == "" && filtro2 != "" && filtro3 == "" && filtro4 == "") {
+        console.log('filtro 7');
+        var filtros = "F. hasta: "+filtro2Titulo+".";
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          var datearray1 = data[2].split("/");
+          var newdate1 =   datearray1[2] + datearray1[1] + datearray1[0];
+          if (hasta >= newdate1) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+
+      else if (filtro1 == "" && filtro2 == "" && filtro3 != "" && filtro4 != "") {
+        console.log('filtro 8');
+        var filtros = "Pacientes: "+String(filtro3)+" y Medicos: "+String(filtro4);
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          if (pacientes.includes(data[0]) && medicos.includes(data[1])) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+      else if (filtro1 == "" && filtro2 == "" && filtro3 != "" && filtro4 == "") {
+        console.log('filtro 9');
+        var filtros = "Pacientes: "+String(filtro3);
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          if (pacientes.includes(data[0])) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+      else if (filtro1 != "" && filtro2 == "" && filtro3 != "" && filtro4 == "") {
+        console.log('filtro 10');
+        var filtros = "F. desde: " + filtro1Titulo+"y Pacientes: "+String(filtro3)+".";
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          var datearray1 = data[2].split("/");
+          var newdate1 =   datearray1[2] + datearray1[1] + datearray1[0];
+          if (desde <= newdate1 && pacientes.includes(data[0])) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+      else if (filtro1 == "" && filtro2 != "" && filtro3 != "" && filtro4 == "") {
+        console.log('filtro 11');
+        var filtros = "F. hasta: "+filtro2Titulo+"y Pacientes: "+String(filtro3)+".";
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          var datearray1 = data[2].split("/");
+          var newdate1 =   datearray1[2] + datearray1[1] + datearray1[0];
+          if (hasta >= newdate1 && pacientes.includes(data[0])) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+
+      else if (filtro1 == "" && filtro2 == "" && filtro3 == "" && filtro4 != "") {
+        console.log('filtro 12');
+        var filtros = "Medicos: "+String(filtro4)+".";
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          if (medicos.includes(data[1])) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+      else if (filtro1 != "" && filtro2 == "" && filtro3 == "" && filtro4 != "") {
+        console.log('filtro 13');
+        var filtros = "F. desde: "+filtro1Titulo+" y Medicos: "+String(filtro4);
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          var datearray1 = data[2].split("/");
+          var newdate1 =   datearray1[2] + datearray1[1] + datearray1[0];
+          if (desde <= newdate1 && medicos.includes(data[1])) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+      else if (filtro1 != "" && filtro2 != "" && filtro3 == "" && filtro4 != "") {
+        console.log('filtro 14');
+        var filtros = "F. desde: " + filtro1Titulo+", F. hasta: " + filtro2Titulo +" y Medicos: "+String(filtro4);
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          var datearray1 = data[2].split("/");
+          var newdate1 =   datearray1[2] + datearray1[1] + datearray1[0];
+          if (desde <= newdate1 && hasta >= newdate1 && medicos.includes(data[1])) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+      }
+      else if (filtro1 != "" && filtro2 == "" && filtro3 != "" && filtro4 != "") {
+        console.log('filtro 15');
+        var filtros = "F. desde: " + filtro1Titulo+", Pacientes: " + String(filtro3) +" y Medicos: "+String(filtro4);
+        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+          var datearray1 = data[2].split("/");
+          var newdate1 =   datearray1[2] + datearray1[1] + datearray1[0];
+          if (desde <= newdate1 && pacientes.includes(data[0]) && medicos.includes(data[1])) {
+            return true;
+
+          } else {
+            return false;
+
+          }
+        }
+
+        $.fn.dataTable.ext.search.push(filtradoTabla)
+
+        table.draw()
+
+        
+
+      }
+      $('#filtros').val(String(filtros));
+
+    });
+  });
 </script>
 {%endblock scripts%}
