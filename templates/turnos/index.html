@@ -78,17 +78,21 @@
                         <td>{{turno.medico.nombre}} {{turno.medico.apellido}}</td>
                         <td>{{turno.getFecha}}</td>
                         <td>{{turno.detalle}}</td>
-                        {%if turno.activo%}
-                        <td><span class="badge badge-danger">Sin atender</span></td>
-                        {%else%}
-                        <td><span class="badge badge-success">Atendido</span></td>
-                        {%endif%}
+                        <td>
+                            <span style="background-color:{{turno.estado.colorEtiqueta}}; color: white;" class="badge">
+                                {{turno.estado.nombre}}
+                            </span>
+                        </td>
                         <td class="text-right">
                             <a title="Observaciones" class="btn btn-light btn-sm"
-                                onclick="openModalObservacion('{{turno.paciente.id}}','{{turno.activo}}')"><i
+                                onclick="openModalObservacion('{{turno.paciente.id}}','{{turno.estado.nombre}}')"><i
                                     class="fal fa-book-medical fa-lg"></i></a>
                             <a title="Editar" class="btn btn-light btn-sm" href="/home/turnos/edit/{{turno.id}}"><i
                                     class="fal fa-edit fa-lg"></i></a>
+                            {%if turno.estado.nombre == 'Sin atender' %}
+                            <a title="Registrar falta" onclick="openModalFalta('{{turno.id}}')"
+                                class="btn btn-light btn-sm"><i class="fal fa-times-octagon fa-lg"></i></a>
+                            {%endif%}
                             <a title="Eliminar turno" onclick="openModalDelete('{{turno.id}}')"
                                 class="btn btn-danger btn-sm"><i class="fal fa-trash fa-lg"></i></a>
                         </td>
@@ -158,6 +162,28 @@
         </div>
     </div>
 </div>
+<div id="registrarFalta" class="modal fade bd-example-modal-xl" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Registrar falta</h2>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" id="formFalta">
+                    {% csrf_token %}
+                    <h5 align="center" style="margin:0;">Esta a punto de registrar una falta ¿desea continuar?</h5>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary"><i class="fal fa-check"></i>Continuar</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
 <input type="hidden" id="filtros" value="Ningún filtro aplicado.">
 
 {%endblock body%}
@@ -204,10 +230,9 @@
 
 
 <script>
-    function openModalObservacion(id, activo) {
+    function openModalObservacion(id, turno) {
         $('#observacionesModal').modal('show');
-        console.log(typeof (activo))
-        if (activo == 'True') {
+        if (turno == 'Sin atender') {
             $('#botonNuevaObservacion').css("display", "block");
         } else {
             $('#botonNuevaObservacion').css("display", "none");
@@ -253,6 +278,12 @@
         $('#formDelete').attr('action', '/home/turnos/delete/' + id);
     }
 
+    function openModalFalta(id) {
+        $('#registrarFalta').modal('show');
+
+        $('#formFalta').attr('action', '/home/pacientes/falta/' + id);
+    }
+
 </script>
 
 <script>
@@ -267,7 +298,7 @@
                 {
                     extend: 'pdfHtml5',
                     exportOptions: {
-                        columns: [0,1,2,3]
+                        columns: [0, 1, 2, 3]
                     },
                     className: 'btn btn-secondary buttons-pdf buttons-html5',
                     text: 'PDF',
@@ -324,7 +355,7 @@
                             return {
                                 columns: [
                                     {
-                                        text:' ',
+                                        text: ' ',
                                         width: 70,
                                         margin: [-10, -10, 10, 0]
                                     },

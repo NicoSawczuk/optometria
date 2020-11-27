@@ -78,16 +78,32 @@ def observacionesPaciente(request):
     return HttpResponse(data, content_type='application/json')
 
 def createObservacionPaciente(request):
-      
-    observacion = ObservacionPaciente.objects.create(detalle=request.POST.get('detalle'), paciente_id=request.POST.get('id'))
-    observacion.save()
-    
     myDate = datetime.now()
     formatedDate = myDate.strftime("%Y-%m-%d")
-    Turno.objects.filter(paciente_id=request.POST.get('id'), fecha=formatedDate).update(activo=False)
+    if Turno.objects.filter(paciente_id=request.POST.get('id'), fecha=formatedDate).exists():
+        observacion = ObservacionPaciente.objects.create(detalle=request.POST.get('detalle'), paciente_id=request.POST.get('id'))
+        observacion.save()
+        
+        Turno.objects.filter(paciente_id=request.POST.get('id'), fecha=formatedDate).update(estado=EstadoTurno.objects.get(nombre='Atendido'))
     
-    messages.success(request, "Observación agregada con éxito")
-    return redirect ('/home/turnos/index')
+        messages.success(request, "Observación agregada con éxito")
+        return redirect ('/home/turnos/index')
+    else:
+        messages.error(request, "No puede agregar observaciones a turnos que no sean del dia de hoy")
+        return redirect ('/home/turnos/index')
+
+def registrarFalta (request,pk):
+    turno = Turno.objects.get(id=pk)
+    myDate = datetime.now()
+    formatedDate = myDate.strftime("%Y-%m-%d")
+    if turno.fecha <= formatedDate:
+        Turno.objects.filter(id=pk).update(estado=EstadoTurno.objects.get(nombre='No asistió'))
+        
+        messages.success(request, "Falta registrada con éxito")
+        return redirect ('/home/turnos/index')
+    else:
+        messages.error(request, "No puedes registrar una falta antes del dia")
+        return redirect ('/home/turnos/index')
 
 
 def indexTurnos (request):
@@ -102,7 +118,7 @@ def createTurno (request):
     if request.method == 'GET':
         return render (request, 'turnos/create.html',{'medicos':medicos, 'pacientes':pacientes})
     else:
-        if (Turno.objects.filter(paciente_id = request.POST.get('paciente'),fecha = request.POST.get('fecha'), activo=True).exists()):
+        if (Turno.objects.filter(paciente_id = request.POST.get('paciente'),fecha = request.POST.get('fecha'), estado=EstadoTurno.objects.get(nombre='Sin atender')).exists()):
             messages.error(request, 'El paciente ya tiene asignado un turno en el dia seleccionado')
             return redirect ('/home/turnos/index')
         else:
@@ -111,6 +127,7 @@ def createTurno (request):
                 medico_id = request.POST.get('medico'),
                 fecha = request.POST.get('fecha'),
                 detalle = request.POST.get('detalle'),
+                estado=EstadoTurno.objects.get(nombre='Sin atender'),
             )
             turno.save()
             messages.success(request, "Turno agregado con exito")
