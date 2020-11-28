@@ -140,15 +140,51 @@ def indexProductos (request):
     return render (request, 'productos/index.html',{'productos':productos})
 
 def createProducto (request):
-    pass
+    if request.method == 'GET':
+        caracteristicasProducto = CaracteristicaProducto.objects.all()
+        return render (request, 'productos/create.html', {'caracteristicasProducto':caracteristicasProducto})
+    else:
+        caracteristicaProducto = CaracteristicaProducto.objects.get(id=request.POST['caracteristicaProducto'])
+        valorCaracteristicaProducto = ValorCaracteristicaProducto.objects.get(id=request.POST['valorCaracteristicaProducto'])
+        producto = Producto.objects.create(
+            nombre = request.POST['nombre'],
+            descripcion = request.POST['descripcion'],
+            caracteristicaProducto = caracteristicaProducto,
+            valorCaracteristicaProducto = valorCaracteristicaProducto,
+            precio = request.POST.get('precio'),
+        )
+        producto.save()
+        messages.success(request, "Producto agregado con exito")
+        return redirect ('/home/productos/index')
 
 def editProducto (request, pk):
-    pass
+    producto = Producto.objects.get(id=pk)
+    caracteristicasProducto = CaracteristicaProducto.objects.all()
+    valorCaracteristicasProducto = ValorCaracteristicaProducto.objects.filter(caracteristicaproducto=producto.caracteristicaProducto.id)
+    if request.method == 'GET':
+        return render (request, 'productos/edit.html',{'producto':producto, 'caracteristicasProducto':caracteristicasProducto, 'valorCaracteristicasProducto':valorCaracteristicasProducto})
+    else:
+        caracteristicaProducto = CaracteristicaProducto.objects.get(id=request.POST['caracteristicaProducto'])
+        valorCaracteristicaProducto = ValorCaracteristicaProducto.objects.get(id=request.POST['valorCaracteristicaProducto'])
+        producto = Producto.objects.filter(id=request.POST['id']).update(
+            nombre = request.POST['nombre'],
+            descripcion = request.POST['descripcion'],
+            caracteristicaProducto = caracteristicaProducto,
+            valorCaracteristicaProducto = valorCaracteristicaProducto,
+            precio = request.POST.get('precio'),
+        )
+        messages.success(request, "Producto actualizado con exito")
+        return redirect ('/home/productos/index')
 
 def deleteProducto (request, pk):
-    pass
+    Producto.objects.get(id=pk).delete()
+    messages.success(request, "Producto eliminado con exito")
+    return redirect ('/home/productos/index')
 
-
+def getValores (request):
+    valores = ValorCaracteristicaProducto.objects.filter(caracteristicaproducto=request.GET['id'])
+    data = serializers.serialize('json', valores, fields=('id','valor'))
+    return HttpResponse(data, content_type='application/json')
 
 def indexPedidos (request):
     pedidos = Pedido.objects.all()
