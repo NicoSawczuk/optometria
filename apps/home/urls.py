@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 from django.contrib.auth.decorators import login_required
-from .views import home, indexPacientes, createPaciente, editPaciente, observacionesPaciente, createObservacionPaciente, indexTurnos, createTurno, editTurno, deleteTurno,registrarFalta, indexProductos, createProducto, editProducto, deleteProducto, indexPedidos, createPedido, editPedido, deletePedido, cambiarEstadoPedido
+from .views import home, indexPacientes, createPaciente, editPaciente, observacionesPaciente, createObservacionPaciente, indexTurnos, createTurno, editTurno, deleteTurno,registrarFalta, indexProductos, createProducto, editProducto, deleteProducto, indexPedidos, createPedido, editPedido, deletePedido, cambiarEstadoPedido, getValores
 
 urlpatterns = [
     path('', login_required(home), name = 'index'),
@@ -24,6 +24,8 @@ urlpatterns = [
     path('productos/create', login_required(createProducto), name = 'createProducto'),
     path('productos/edit/<int:pk>', login_required(editProducto), name='editProducto'),
     path('productos/delete/<int:pk>', login_required(deleteProducto), name='deleteProducto'),
+    path('productos/getValores', login_required(getValores), name='getValores'),
+    path('productos/edit/getValores', login_required(getValores), name='getValoresEdit'),
     
     #Pedidos
     path('pedidos/index', login_required(indexPedidos), name = 'indexPedidos'),
