@@ -35,6 +35,9 @@ class Paciente(models.Model):
     def __str__(self):
         return self.nombre + ' ' + self.apellido
     
+    def getFechaNacimiento(self):
+        return self.fecha_nac[8:10] +'/'+ self.fecha_nac[5:7] +'/'+ self.fecha_nac[0:4]
+    
 class ObservacionPaciente(models.Model):
     id = models.AutoField(primary_key = True)
     detalle = models.TextField(blank = False, null = True)
