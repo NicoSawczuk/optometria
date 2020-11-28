@@ -35,6 +35,9 @@ class Paciente(models.Model):
     def __str__(self):
         return self.nombre + ' ' + self.apellido
     
+    def getFechaNacimiento(self):
+        return self.fecha_nac[8:10] +'/'+ self.fecha_nac[5:7] +'/'+ self.fecha_nac[0:4]
+    
 class ObservacionPaciente(models.Model):
     id = models.AutoField(primary_key = True)
     detalle = models.TextField(blank = False, null = True)
@@ -48,6 +51,21 @@ class ObservacionPaciente(models.Model):
     
     def __str__(self):
         return 'Observacion '+ self.paciente.nombre +' '+ self.paciente.apellido
+
+class EstadoTurno(models.Model):
+    id = models.AutoField(primary_key = True)
+    nombre = models.CharField(max_length = 60, blank = False, null = True)
+    descripcion = models.CharField(max_length = 60, blank = False, null = True)
+    colorEtiqueta = models.CharField(max_length = 7, blank = False, null = True)
+    
+    class Meta:
+        verbose_name = 'Estado Turno'
+        verbose_name_plural = 'Estados Turnos'
+        ordering = ['id']
+    
+    def __str__(self):
+        return self.nombre
+
     
 class Turno(models.Model):
     id = models.AutoField(primary_key = True)
@@ -55,7 +73,7 @@ class Turno(models.Model):
     medico = models.ForeignKey(Medico, verbose_name="Medico", on_delete=models.CASCADE)
     fecha = models.CharField(blank = False, null = True,max_length = 10)
     detalle = models.TextField(blank = False, null = True)
-    activo = models.BooleanField(default=True)
+    estado = models.ForeignKey(EstadoTurno, verbose_name="EstadoTurno", on_delete=models.CASCADE)
     
     class Meta:
         verbose_name = 'Turno'
@@ -64,6 +82,9 @@ class Turno(models.Model):
     
     def __str__(self):
         return 'Turno '+ self.paciente.nombre +' '+ self.paciente.apellido
+    
+    def getFecha(self):
+        return self.fecha[8:10] +'/'+ self.fecha[5:7] +'/'+ self.fecha[0:4]
     
 class TipoDePago(models.Model):
     id = models.AutoField(primary_key = True)
@@ -150,3 +171,6 @@ class Pedido(models.Model):
     
     def __str__(self):
         return 'Pedido '+ self.paciente.nombre +' '+ self.paciente.apellido
+    
+    def getProductos(self):
+        return self.producto.all()

@@ -1,0 +1,110 @@
+{%extends 'home/home.html'%}
+{%load static%}
+
+{%block titulo%} Editar un pedido {%endblock titulo%}
+
+{%block body%}
+<div class="card">
+    <div class="card-header bg-light">
+        <strong>Editar un pedido</strong>
+    </div>
+    <div class="card-body card-block">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group row">
+                <div class="form-group col-md-3">
+                    <label for="paciente" class=" col-form-label text-md-right">Paciente</label>
+                    <select class="browser-default custom-select" name="paciente" required>
+                        {%for paciente in pacientes%}
+                            {%if pedido.paciente.id == paciente.id%}
+                            <option value="{{paciente.id}}" selected>{{paciente.nombre}} {{paciente.apellido}}</option>
+                            {%else%}
+                            <option value="{{paciente.id}}">{{paciente.nombre}} {{paciente.apellido}}</option>
+                            {%endif%}
+                        {%endfor%}
+                    </select>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="productos" class=" col-form-label text-md-right">Productos</label>
+                    <select class="select2" multiple="multiple" style="width: 100%;" name="productos"
+                        onchange="cargarSubtotal()" required>
+                        {%for producto in productos%}
+                            {%if producto in pedido.producto.all%}
+                            <option value="{{producto.id}}" selected>{{producto.nombre}} {{producto.caracteristicaProducto}}
+                                {{producto.valorCaracteristicaProducto}}</option>
+                            {%else%}
+                            <option value="{{producto.id}}">{{producto.nombre}} {{producto.caracteristicaProducto}}
+                                {{producto.valorCaracteristicaProducto}}</option>
+                            {%endif%}
+                        {%endfor%}
+
+                        {%for producto in productos%}
+                        <input type="hidden" id="{{producto.id}}" value="{{producto.precio}}">
+                        {%endfor%}
+                    </select>
+                </div>
+
+            </div>
+            <div class="form-group row">
+                <div class="form-group col-md-3">
+                    <label for="tipo_pago" class=" col-form-label text-md-right">Tipo de pago</label>
+                    <select class="browser-default custom-select" name="tipo_pago" required>
+                        {%for tipoDePago in tiposDePago%}
+                            {%if pedido.tipoDePago.id == tipoDePago.id%}
+                            <option value="{{tipoDePago.id}}" selected>{{tipoDePago.descripcion}}</option>
+                            {%else%}
+                            <option value="{{tipoDePago.id}}">{{tipoDePago.descripcion}}</option>
+                            {%endif%}
+                        
+                        {%endfor%}
+                    </select>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label for="subtotal" class=" col-form-label text-md-right">Subtotal</label>
+                    <input id="subtotal" type="number" class="form-control" name="subtotal" value="{{pedido.subtotal}}"
+                        placeholder="Subtotal" pattern="[A-Za-z]{}" required readonly>
+                </div>
+
+                <!-- <div class="form-group col-md-3">
+                    <label for="medico" class=" col-form-label text-md-right">Medico</label>
+                    <select class="browser-default custom-select" name="medico" required>
+                        {%for medico in medicos%}
+                        <option value="{{medico.id}}">{{medico.nombre}} {{medico.apellido}}</option>
+                        {%endfor%}
+                    </select>
+                </div> -->
+            </div>
+
+    </div>
+    <div class="card-footer float">
+        <div class="float-right">
+            <a href="/home/pedidos/index" class="btn btn-dark"><i class="fal fa-times"></i> Cancelar </a>
+            <button type="submit" class="btn btn-primary "><i class="fal fa-check"></i> Guardar</button>
+        </div>
+    </div>
+</div>
+</form>
+</div>
+{%endblock body%}
+{%block scripts%}
+{{ block.super }}
+<script>
+    $(function () {
+        $('.select2').select2()
+    });
+
+    function cargarSubtotal() {
+        productos = $('.select2').val()
+        var subtotal = 0
+        if (productos.length == 0){
+            $('#subtotal').val(0)
+        }
+        productos.map((producto) => {
+            subtotal += parseFloat($('#'+producto).val())
+            $('#subtotal').val(subtotal)
+        })
+    }
+</script>
+{%endblock scripts%}

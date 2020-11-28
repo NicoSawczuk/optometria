@@ -168,5 +168,32 @@
       "descripcion": "Pedido finalizado",
       "colorEtiqueta": "#28a745"
     }
+  },
+  {
+    "model": "home.estadoturno",
+    "pk": 23,
+    "fields": {
+      "nombre": "Sin atender",
+      "descripcion": "El paciente aun no ha sido atendido",
+      "colorEtiqueta": "#17a2b8"
+    }
+  },
+  {
+    "model": "home.estadoturno",
+    "pk": 24,
+    "fields": {
+      "nombre": "No asistió",
+      "descripcion": "El paciente faltó a la consulta",
+      "colorEtiqueta": "#ffc107"
+    }
+  },
+  {
+    "model": "home.estadoturno",
+    "pk": 25,
+    "fields": {
+      "nombre": "Atendido",
+      "descripcion": "El paciente ha sido atendido",
+      "colorEtiqueta": "#28a745"
+    }
   }
 ]

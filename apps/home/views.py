@@ -78,21 +78,39 @@ def observacionesPaciente(request):
     return HttpResponse(data, content_type='application/json')
 
 def createObservacionPaciente(request):
-      
-    observacion = ObservacionPaciente.objects.create(detalle=request.POST.get('detalle'), paciente_id=request.POST.get('id'))
-    observacion.save()
-    
     myDate = datetime.now()
     formatedDate = myDate.strftime("%Y-%m-%d")
-    Turno.objects.filter(paciente_id=request.POST.get('id'), fecha=formatedDate).update(activo=False)
+    if Turno.objects.filter(paciente_id=request.POST.get('id'), fecha=formatedDate).exists():
+        observacion = ObservacionPaciente.objects.create(detalle=request.POST.get('detalle'), paciente_id=request.POST.get('id'))
+        observacion.save()
+        
+        Turno.objects.filter(paciente_id=request.POST.get('id'), fecha=formatedDate).update(estado=EstadoTurno.objects.get(nombre='Atendido'))
     
-    messages.success(request, "Observación agregada con éxito")
-    return redirect ('/home/turnos/index')
+        messages.success(request, "Observación agregada con éxito")
+        return redirect ('/home/turnos/index')
+    else:
+        messages.error(request, "No puede agregar observaciones a turnos que no sean del dia de hoy")
+        return redirect ('/home/turnos/index')
+
+def registrarFalta (request,pk):
+    turno = Turno.objects.get(id=pk)
+    myDate = datetime.now()
+    formatedDate = myDate.strftime("%Y-%m-%d")
+    if turno.fecha <= formatedDate:
+        Turno.objects.filter(id=pk).update(estado=EstadoTurno.objects.get(nombre='No asistió'))
+        
+        messages.success(request, "Falta registrada con éxito")
+        return redirect ('/home/turnos/index')
+    else:
+        messages.error(request, "No puedes registrar una falta antes del dia")
+        return redirect ('/home/turnos/index')
 
 
 def indexTurnos (request):
     turnos = Turno.objects.all()
-    return render (request, 'turnos/index.html',{'turnos':turnos})
+    pacientes = Paciente.objects.all()
+    estados = EstadoTurno.objects.all()
+    return render (request, 'turnos/index.html',{'turnos':turnos, 'pacientes': pacientes, 'estados': estados})
 
 def createTurno (request):
     medicos = Medico.objects.all()
@@ -100,7 +118,7 @@ def createTurno (request):
     if request.method == 'GET':
         return render (request, 'turnos/create.html',{'medicos':medicos, 'pacientes':pacientes})
     else:
-        if (Turno.objects.filter(paciente_id = request.POST.get('paciente'),fecha = request.POST.get('fecha'), activo=True).exists()):
+        if (Turno.objects.filter(paciente_id = request.POST.get('paciente'),fecha = request.POST.get('fecha'), estado=EstadoTurno.objects.get(nombre='Sin atender')).exists()):
             messages.error(request, 'El paciente ya tiene asignado un turno en el dia seleccionado')
             return redirect ('/home/turnos/index')
         else:
@@ -109,6 +127,7 @@ def createTurno (request):
                 medico_id = request.POST.get('medico'),
                 fecha = request.POST.get('fecha'),
                 detalle = request.POST.get('detalle'),
+                estado=EstadoTurno.objects.get(nombre='Sin atender'),
             )
             turno.save()
             messages.success(request, "Turno agregado con exito")
@@ -214,10 +233,34 @@ def createPedido (request):
         return redirect ('/home/pedidos/index')
     
 def editPedido (request, pk):
-    pass
+    pedido = Pedido.objects.get(id=pk)
+    productos = Producto.objects.all()
+    tiposDePago = TipoDePago.objects.all()
+    pacientes = Paciente.objects.all()
+    if request.method == 'GET':
+        return render (request, 'pedidos/edit.html',{'pedido':pedido, 'productos':productos, 'pacientes':pacientes, 'tiposDePago':tiposDePago})
+    else:
+        pedido = Pedido.objects.filter(id=pk).update(
+                paciente = Paciente.objects.get(id=request.POST.get('paciente')),
+                subtotal = request.POST.get('subtotal'),
+                tipoDePago = TipoDePago.objects.get(id=request.POST.get('tipo_pago'))
+            )
+        pedido = Pedido.objects.get(id=pk)
+        productos = request.POST.getlist('productos')
+        print(pedido.getProductos())
+        for producto in pedido.getProductos():
+            pedido.producto.remove(producto)
+        
+        for producto in productos:
+            pedido.producto.add(Producto.objects.get(id=producto))
+        pedido.save()
+        messages.success(request, "Pedido modificado con exito")
+        return redirect ('/home/pedidos/index')
 
 def deletePedido (request, pk):
-    pass
+    Pedido.objects.get(id=pk).delete()
+    messages.success(request, "Pedido eliminado con exito")
+    return redirect ('/home/pedidos/index')
 
 def cambiarEstadoPedido (request):
     Pedido.objects.filter(id=request.POST.get('pedido')).update(estado_id=request.POST.get('estado'))
