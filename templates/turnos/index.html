@@ -76,8 +76,8 @@
                         <td>{{turno.medico.nombre}} {{turno.medico.apellido}}</td>
                         <td>{{turno.getFecha}}</td>
                         <td>{{turno.detalle}}</td>
-                        <td style="background-color:{{turno.estado.colorEtiqueta}}; color: white;">
-                            {{turno.estado.nombre}}
+                        <td >
+                            <span style="background-color:{{turno.estado.colorEtiqueta}}; color: white;" class="badge">{{turno.estado.nombre}}</span>
                         </td>
                         <td class="text-right">
                             <a title="Observaciones" class="btn btn-light btn-sm"
