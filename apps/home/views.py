@@ -269,6 +269,13 @@ def cambiarEstadoPedido (request):
     return redirect ('/home/pedidos/index')
     
 
+def getValoresCaracteristica (request):
+    print(request.GET['id'])
+    caracteristica = CaracteristicaProducto.objects.get(id = request.GET['id']).valor.all()
+    print(caracteristica)
+    data = serializers.serialize('json',caracteristica, fields=('id', 'valor'))
+    return HttpResponse(data, content_type='application/json')
+
 class Login(FormView):
     template_name='login.html'
     form_class = LoginForm
