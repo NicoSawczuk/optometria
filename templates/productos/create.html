@@ -1,0 +1,96 @@
+{%extends 'home/home.html'%}
+{%load static%}
+
+{%block titulo%} Crear un producto {%endblock titulo%}
+
+{%block body%}
+<div class="card">
+    <div class="card-header bg-light">
+        <strong>Crear un producto</strong>
+    </div>
+    <div class="card-body card-block">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group row">
+                <div class="form-group col-md-4">
+                    <label for="nombre" class=" col-form-label text-md-right">Nombre del Producto</label>
+                    <input id="nombre" type="text" class="form-control" name="nombre" value=""
+                        placeholder="Ingrese el nombre" pattern="[A-Za-z]{}" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="descripcion" class=" col-form-label text-md-right">Descripcion</label>
+                    <textarea id="descripcion" type="text" class="form-control" name="descripcion"
+                        placeholder="Ingrese una descripcion" pattern="[A-Za-z]{}"></textarea>
+                </div>
+
+            </div>
+            <div class="form-group row">
+                <div class="form-group col-md-4">
+                    <label for="caracteristicaProducto" class=" col-form-label text-md-right">Caracteristica del Producto</label>
+                    <select class="browser-default custom-select" name="caracteristicaProducto" id="caracteristicaProducto" required>
+                        <option value="" selected disabled>--Seleccione--</option>
+                        {%for caracteristicaProducto in caracteristicasProducto%}
+                        <option value="{{caracteristicaProducto.id}}">{{caracteristicaProducto.caracteristica}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="valorCaracteristicaProducto" class=" col-form-label text-md-right">Valor de la Caracteristica</label>
+                    <select class="browser-default custom-select" name="valorCaracteristicaProducto" id="valorCaracteristicaProducto" required disabled>
+                        <option value="" selected disabled>--Seleccione--</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+
+                <div class="form-group col-md-4">
+                    <label for="precio" class=" col-form-label text-md-right">Precio</label>
+                    <input id="precio" type="number" class="form-control" name="precio" value=""
+                        placeholder="Ingrese el precio" required >
+                </div>
+
+            </div>
+
+    </div>
+    <div class="card-footer float">
+        <div class="float-right">
+            <a href="/home/productos/index" class="btn btn-dark"><i class="fal fa-times"></i> Cancelar </a>
+            <button type="submit" class="btn btn-primary "><i class="fal fa-check"></i> Guardar</button>
+        </div>
+    </div>
+</div>
+</form>
+</div>
+{%endblock body%}
+{%block scripts%}
+{{ block.super }}
+<script>
+    $(document).ready(function(){
+        
+
+        $('#caracteristicaProducto').change(function(){
+            $('#equipo').removeAttr('disabled');
+            var id = $(this).val()
+            $('#valorCaracteristicaProducto').html('<option value="" selected disabled>--Seleccione--</option>')
+            $.ajax({
+                data: {'id' : id},
+                url: 'getValores',
+                type: 'get',
+                success: (data) => {
+                    $('#valorCaracteristicaProducto').removeAttr('disabled');
+                    data.forEach(element => {
+                         $("#valorCaracteristicaProducto").append(
+                                '<option value="'+element.pk+'">'+element.fields.valor+'</option>'
+                            );
+                    });
+                },
+                error: (error) => {
+                    console.log(error)
+                }
+            })
+
+        });
+    }) ;
+</script>
+{%endblock scripts%}
