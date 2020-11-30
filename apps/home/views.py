@@ -267,7 +267,13 @@ def deletePedido (request, pk):
     return redirect ('/home/pedidos/index')
 
 def cambiarEstadoPedido (request):
-    Pedido.objects.filter(id=request.POST.get('pedido')).update(estado_id=request.POST.get('estado'))
+    estado = EstadoPedido.objects.get(id=request.POST.get('estado'))
+    if (estado.nombre == 'Finalizado'):
+        myDate = datetime.now()
+        formatedDate = myDate.strftime("%Y-%m-%d")
+        Pedido.objects.filter(id=request.POST.get('pedido')).update(estado_id=request.POST.get('estado'), fecha_finalizado=formatedDate)
+    else:
+        Pedido.objects.filter(id=request.POST.get('pedido')).update(estado_id=request.POST.get('estado'))
     
     messages.success(request, "Estado del pedido modificado con exito")
     return redirect ('/home/pedidos/index')

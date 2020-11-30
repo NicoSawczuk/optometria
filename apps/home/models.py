@@ -162,7 +162,8 @@ class Pedido(models.Model):
     subtotal = models.DecimalField(max_digits=7, decimal_places=2)
     tipoDePago = models.ForeignKey(TipoDePago, verbose_name="TipoDePago", on_delete=models.CASCADE)
     estado = models.ForeignKey(EstadoPedido, verbose_name="EstadoPedido", on_delete=models.CASCADE)
-    user = models.ForeignKey(User, verbose_name="User", on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, verbose_name="User", on_delete=models.CASCADE, null=True, )
+    fecha_finalizado = models.CharField(blank = True, null = True, max_length = 10,)
     
     class Meta:
         verbose_name = 'Pedido'
@@ -174,3 +175,6 @@ class Pedido(models.Model):
     
     def getProductos(self):
         return self.producto.all()
+    
+    def getFechaFinalizado(self):
+        return self.fecha_finalizado[8:10] +'/'+ self.fecha_finalizado[5:7] +'/'+ self.fecha_finalizado[0:4]

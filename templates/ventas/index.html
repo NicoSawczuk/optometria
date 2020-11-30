@@ -15,10 +15,10 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Paciente</th>
+                    <th scope="col">Fecha</th>
                     <th scope="col">Productos</th>
                     <th scope="col">Total</th>
                     <th scope="col">Tipo de pago</th>
-                    <th scope="col">Estado</th>
                     <th scope="col">Vendedor</th>
                 </tr>
             </thead>
@@ -27,6 +27,9 @@
                 <tr>
                     <td>{{venta.id}}</td>
                     <td>{{venta.paciente.nombre}} {{venta.paciente.apellido}}</td>
+                    <td class="text-right">
+                        {{venta.getFechaFinalizado}}
+                    </td>
                     <td>
                         {% for producto in venta.producto.all %}
                         <h5>
@@ -39,11 +42,6 @@
                     </td>
                     <td class="text-right">$ {{venta.subtotal}}</td>
                     <td>{{venta.tipoDePago.descripcion}}</td>
-                    <td>
-                        <span style="background-color:{{venta.estado.colorEtiqueta}}; color: white;" class="badge">
-                            {{venta.estado.nombre}}
-                        </span>
-                    </td>
                     <td>
                         {{venta.user.first_name}} {{venta.user.last_name}}
                     </td>
