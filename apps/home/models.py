@@ -167,6 +167,7 @@ class Pedido(models.Model):
     estado = models.ForeignKey(EstadoPedido, verbose_name="EstadoPedido", on_delete=models.CASCADE)
     user = models.ForeignKey(User, verbose_name="User", on_delete=models.CASCADE, null=True, )
     fecha_finalizado = models.CharField(blank = True, null = True, max_length = 10,)
+    fecha_pedido = models.CharField(blank = True, null = True, max_length = 10,)
     
     class Meta:
         verbose_name = 'Pedido'
@@ -181,4 +182,7 @@ class Pedido(models.Model):
     
     def getFechaFinalizado(self):
         return self.fecha_finalizado[8:10] +'/'+ self.fecha_finalizado[5:7] +'/'+ self.fecha_finalizado[0:4]
+
+    def getFecha(self):
+        return self.fecha_pedido[8:10] +'/'+ self.fecha_pedido[5:7] +'/'+ self.fecha_pedido[0:4]
     
