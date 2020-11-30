@@ -37,6 +37,9 @@ class Paciente(models.Model):
     
     def getFechaNacimiento(self):
         return self.fecha_nac[8:10] +'/'+ self.fecha_nac[5:7] +'/'+ self.fecha_nac[0:4]
+
+    def getUltimoTurno(self):
+        return Turno.objects.filter(paciente__id=self.id).latest('id')
     
 class ObservacionPaciente(models.Model):
     id = models.AutoField(primary_key = True)
@@ -178,3 +181,4 @@ class Pedido(models.Model):
     
     def getFechaFinalizado(self):
         return self.fecha_finalizado[8:10] +'/'+ self.fecha_finalizado[5:7] +'/'+ self.fecha_finalizado[0:4]
+    

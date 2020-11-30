@@ -28,6 +28,7 @@ def home (request):
 
 def indexPacientes (request):
     #Si es medico
+    estados = EstadoTurno.objects.all()
     if(request.user.groups.filter(name='Profesional medico').exists()):
         turnos = Turno.objects.filter(medico_id=request.user.medico.id)
         print(turnos)
@@ -37,7 +38,7 @@ def indexPacientes (request):
                 pacientes.append(turno.paciente)
     else:
         pacientes = Paciente.objects.all()
-    return render (request, 'pacientes/index.html',{'pacientes':pacientes})
+    return render (request, 'pacientes/index.html',{'pacientes':pacientes, 'estados':estados})
 
 
 def createPaciente (request):

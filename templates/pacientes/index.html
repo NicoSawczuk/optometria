@@ -11,29 +11,79 @@
         <a class="btn btn-primary btn-sm float-right text-white" href="/home/pacientes/create">Nuevo</a>
     </div>
     <div class="card-body card-block">
-        <table id="datatable" class="table table-striped table-bordered dataTable">
+        <div class="mt-1 mr-1">
+            <div class="float-right">
+                <button style="padding-bottom: 2px;" title="Desplegar filtros" data-toggle="collapse"
+                    data-target="#demo" class="btn primary bg-light"><i class="far fa-filter"></i></button>
+            </div>
+            <div class="ml-1">
+                <div id="demo" class="collapse">
+                    <div class="row mb-2">
+                        <div class="col-md-2">
+                            <label for="desde" class="col-form-label text-md-right">Desde</label>
+                            <input type="date" id="desde" class="form-control" data-inputmask-alias="datetime"
+                                data-inputmask-inputformat="dd/mm/yyyy" data-mask="" im-insert="false"
+                                placeholder="dd/mm/yyyy">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="hasta" class="col-form-label text-md-right">Hasta</label>
+                            <input type="date" id="hasta" class="form-control" data-inputmask-alias="datetime"
+                                data-inputmask-inputformat="dd/mm/yyyy" data-mask="" im-insert="false"
+                                placeholder="dd/mm/yyyy">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="pacientes" class=" col-form-label text-md-right">Paciente</label>
+                            <select class="select2" multiple="multiple" style="width: 100%;" id="pacientes">
+                                {% for paciente in pacientes %}
+                                <option value="{{paciente.nombre}} {{paciente.apellido}}">
+                                    {{paciente.nombre}} {{paciente.apellido}}
+                                </option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="estados" class=" col-form-label text-md-right">Estados</label>
+                            <select class="select2" multiple="multiple" style="width: 100%;" id="estados">
+                                {% for estado in estados %}
+                                <option value="{{estado.nombre}}">{{estado.nombre}}</option>
+                                {%endfor%}
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <label for="" class="col-form-label text-md-right text-white">Filtro</label>
+                            <button id="filtrar" type="button" class="btn btn-dark">Filtrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table id="datatable" class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Apellido</th>
-                    <th scope="col">F. Nacimiento</th>
+                    <th scope="col">Nombre y  Apellido</th>
+                    <th scope="col">Fecha Nacimiento</th>
                     <th scope="col">Sexo</th>
+                    <th scope="col">Fecha ultimo turno</th>
+                    <th scope="col">Estado del turno</th>
                     <th scope="col" class="text-right">Opciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for paciente in pacientes %}
                 <tr>
-                    <td>{{paciente.nombre}}</td>
-                    <td>{{paciente.apellido}}</td>
+                    <td>{{paciente.nombre}} {{paciente.apellido}}</td>
                     <td>{{paciente.getFechaNacimiento}}</td>
                     <td>{{paciente.sexo}}</td>
-
+                    <td>{{paciente.getUltimoTurno.getFecha}}</td>
+                    <td>
+                        <span style="background-color:{{paciente.getUltimoTurno.estado.colorEtiqueta}}; color: white;" class="badge">{{paciente.getUltimoTurno.estado.nombre}}</span>
+                    </td>
                     <td class="text-right">
-                        <a title="Editar" class="btn btn-light btn-sm"
-                            href="/home/pacientes/edit/{{paciente.id}}"><i class="fal fa-edit fa-lg"></i></a>
+                        <a title="Editar" class="btn btn-light btn-sm" href="/home/pacientes/edit/{{paciente.id}}"><i
+                                class="fal fa-edit fa-lg"></i></a>
                         <a title="Observaciones" class="btn btn-light btn-sm"
-                            onclick="openModalObservacion('{{paciente.id}}')"><i class="fal fa-book-medical fa-lg"></i></a>
+                            onclick="openModalObservacion('{{paciente.id}}')"><i
+                                class="fal fa-book-medical fa-lg"></i></a>
                     </td>
                 </tr>
                 {%endfor%}
@@ -61,7 +111,7 @@
         </div>
     </div>
 </div>
-
+<input type="hidden" id="filtros" value="Ningún filtro aplicado.">
 {%endblock body%}
 {%block scripts%}
 {{ block.super }}
@@ -100,7 +150,7 @@
                         + data[i].fields.detalle +
                         '</div>' +
                         '<div class="col-3 text-muted">'
-                        + data[i].fields.fecha.substring(8, 10) +'/'+ data[i].fields.fecha.substring(5, 7)+ '/'+data[i].fields.fecha.substring(0, 4) +
+                        + data[i].fields.fecha.substring(8, 10) + '/' + data[i].fields.fecha.substring(5, 7) + '/' + data[i].fields.fecha.substring(0, 4) +
                         '</div>' +
                         '</div>' + '</li>'
 
@@ -111,5 +161,618 @@
         });
     }
 
+</script>
+
+<script>
+    $(function () {
+        $("#datatable").DataTable({
+            "responsive": true,
+            "autoWidth": false,
+            "lengthChange": true,
+            "ordering": true,
+            buttons: [
+                'copy', 'csv', 'excel',
+                {
+                    extend: 'pdfHtml5',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    },
+                    className: 'btn btn-secondary buttons-pdf buttons-html5',
+                    text: 'PDF',
+                    filename: 'pacientes_pdf',
+                    orientation: 'portrait', //landscape
+                    pageSize: 'A4', //A3 , A5 , A6 , legal , letter
+
+
+                    customize: function (doc) {
+                        //quitamos el titulo por defecto del pdfhtml5 eliminando el primer elemento del pdf que esta en el array content.
+                        doc.content.splice(0, 1);
+                        //Fecha para usar en el reporte mas adelante
+                        var now = new Date();
+                        var jsDate = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear();
+
+                        //Para poner una imagen hay que convertirla a Base64 con esta pagina se puede:
+                        // http://codebeautify.org/image-to-base64-converter
+
+
+                        //#region aca esta el logo en base64 (expandir, es muy largo xd)
+                        var logo = ' ';
+                        //#endregion
+
+
+                        // Ahora establecemos los margenes: [left,top,right,bottom] o [horizontal,vertical]
+                        // si ponemos solo un numero se establece ese mismo para todos los margenes
+                        doc.pageMargins = [60, 135, 20, 50];
+
+                        // Tamaño de fuente de todo el documento
+                        doc.defaultStyle.fontSize = 10;
+                        // Tamaño de fuente del encabezado
+                        doc.styles.tableHeader.fontSize = 12;
+
+                        //Al elemento 0 (porque borre el titulo al principio) del contenido o sea la tabla
+                        //lo centramos forzadamente
+                        //doc.content[0].margin = [100, 0, 100, 0]
+
+                        // Para personalizar el encabezado:
+                        // Creamos un encabezado con 3 columnas
+                        // A la izquierdalogo
+                        // En el medio: Titulo
+                        // A la derecha: algo xd
+
+                        //El titulo lo saco de un input oculto para poder usar esta misma configuracion para reportes distintos, entonces cambia el titulo segun el reporte.
+                        var titulo = 'Listado de pacientes de '+'{{user.first_name}}'+' '+'{{user.last_name}}';
+                        var autor_reporte = '{{user.username}}';
+                        filtros = String($('#filtros').val());
+
+                        var titulo_header = "Reportes Optometría"
+                        var direccion_header = "Dirección: Salta 1019, Posadas, Misiones"
+                        var contacto_header = "Contacto: optometria@gmail.com"
+
+                        doc['header'] = (function () {
+                            return {
+                                columns: [
+                                    {
+                                        text: ' ',
+                                        width: 70,
+                                        margin: [-10, -10, 10, 0]
+                                    },
+                                    // {
+                                    //   alignment: 'left',
+                                    //   fontSize: 10,
+                                    //   text: [
+                                    //     { text: titulo + " \n", bold: true, fontSize: 12 },
+                                    //     { text: 'Filtros' + "\n", fontSize: 10 },
+                                    //     { text: filtros + "\n" },
+                                    //   ],
+                                    //   width: 100,
+                                    //   margin: [-30, 100, 0, 0],
+                                    //   alignment: 'left'
+                                    // },
+                                    {
+                                        alignment: 'center',
+                                        text: [
+                                            { text: titulo_header + " \n", bold: true, fontSize: 16 },
+                                            { text: direccion_header + " \n" },
+                                            { text: contacto_header + "\n \n \n \n" },
+                                            { text: titulo + " \n", bold: true, fontSize: 12, alignment: 'left' },
+                                            { text: filtros, fontSize: 10, alignment: 'left' },
+                                        ],
+                                        fontSize: 10,
+                                        margin: [-28, 10, 0, 10]
+                                    },
+                                    {
+                                        alignment: 'right',
+                                        fontSize: 10,
+                                        text: ['Fecha: ', { text: jsDate.toString() }, { text: '\n Autor: ' + autor_reporte, bold: true, fontSize: 11 }],
+                                        width: 75,
+                                        margin: [0, 10, 0, 0],
+                                        alignment: 'left'
+                                    }
+                                ],
+                                margin: [20, 10, 20, 20]
+                            }
+                        });
+
+                        //Es equivalente a: 
+                        doc.content[0].table.widths = [120, 100, 40, 110, 90];
+
+                        //Obtenemos la cantidad de filas y le damos la orientacion (izquierda, centro, derecha) que queremos
+                        var rowCount = document.getElementById("datatable").rows.length;
+                        for (i = 1; i < rowCount; i++) {
+                            doc.content[0].table.body[i][0].alignment = 'left';
+                            doc.content[0].table.body[i][1].alignment = 'right';
+                            doc.content[0].table.body[i][2].alignment = 'center';
+                            doc.content[0].table.body[i][3].alignment = 'right';
+                            doc.content[0].table.body[i][4].alignment = 'left';
+                        };
+
+
+                        // Para personalizar el pie de pagina:
+                        // Creamos un objeto de pie de pagina con dos columnas
+                        // Lado izquierdo: Fecha de creacion del reporte
+                        // Lado derecho: pagina actual y total de pagina
+                        doc['footer'] = (function (page, pages) {
+                            return {
+                                columns: [{
+                                    alignment: 'left',
+                                    text: ['Fecha de Generación: ', { text: jsDate.toString() }]
+                                },
+                                {
+                                    alignment: 'right',
+                                    text: ['Página ', { text: page.toString() }, ' de ', { text: pages.toString() }]
+                                }
+                                ],
+                                margin: 20
+                            }
+                        });
+
+                        // Change dataTable layout (Table styling)
+                        // To use predefined layouts uncomment the line below and comment the custom lines below
+                        // doc.content[0].layout = 'lightHorizontalLines'; // noBorders , headerLineOnly
+                        var objLayout = {};
+                        objLayout['hLineWidth'] = function (i) { return .7; };
+                        objLayout['vLineWidth'] = function (i) { return .7; };
+                        objLayout['hLineColor'] = function (i) { return '#cdcdcd'; };
+                        objLayout['vLineColor'] = function (i) { return '#cdcdcd'; };
+                        objLayout['paddingLeft'] = function (i) { return 4; };
+                        objLayout['paddingRight'] = function (i) { return 4; };
+                        objLayout['paddingTop'] = function (i) { return 6; };
+                        objLayout['paddingBottom'] = function (i) { return 6; };
+                        doc.content[0].layout = objLayout;
+                    },
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    },
+                }
+            ],
+            dom: 'lrfBtip',
+            language: {
+                "sProcessing": "Procesando...",
+                "sLengthMenu": "Ver _MENU_",
+                "sZeroRecords": "No se encontraron resultados",
+                "sEmptyTable": "Todavía no se registraron pagos",
+                "sInfo": "Mostrando del _START_ al _END_ de _TOTAL_",
+                "sInfoEmpty": "Mostrando  del 0 al 0 de de 0 ",
+                "sInfoFiltered": "(filtrado de _MAX_ registros)",
+                "sInfoPostFix": "",
+                "sSearch": "Buscar:",
+                "sUrl": "",
+                "sInfoThousands": ",",
+                "sLoadingRecords": "Cargando...",
+                "oPaginate": {
+                    "sFirst": "Primero",
+                    "sLast": "Último",
+                    "sNext": "Sig",
+                    "sPrevious": "Ant"
+                },
+                "oAria": {
+                    "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                },
+                "buttons": {
+                    "copy": "Copiar",
+                    "colvis": "Visibilidad"
+                }
+            }
+        });
+
+        $('#tabla_length').css({
+            'position': 'absolute'
+        });
+
+        $('.dt-buttons').css({
+            'position': "relative",
+            'display': "-ms-inline-flexbox",
+            'display': "block",
+            'vertical-align': "middle",
+            'text-align': " right"
+        });
+    });
+</script>
+
+<script>
+    $(function () {
+        $('.select2').select2()
+    });
+    //Controles de inputs de fechas e inicializacion de selects
+    $(function () {
+        //Datemask dd/mm/yyyy
+        $('#desde').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' });
+        $('#hasta').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' });
+        document.getElementById("desde").max = new Date().toISOString().split("T")[0];
+        document.getElementById("hasta").max = new Date().toISOString().split("T")[0];
+
+        $("#desde").change(function () {
+            var fecha = $(this).val();
+            document.getElementById("hasta").min = fecha;
+        });
+        $("#hasta").change(function () {
+            var fecha = $(this).val();
+            document.getElementById("desde").max = fecha;
+        });
+    })
+</script>
+
+
+
+<script>
+    $(document).ready(function () {
+        var table = $('#datatable').DataTable();
+
+        //un boton con id filtrar
+        $('#filtrar').click(function () {
+
+
+            //aca se obtienen los valores
+            var filtro3 = [];
+            filtro3 = $('#pacientes').val();
+
+            var filtro4 = [];
+            filtro4 = $('#estados').val();
+
+            var filtro1 = $('#desde').val();
+            var filtro1Titulo = moment(filtro1).format('DD/MM/YYYY');
+            if (filtro1 != "") {
+                filtro1 = moment(filtro1).format('YYYYMMDD');
+            }
+
+            var filtro2 = $('#hasta').val();
+            var filtro2Titulo = moment(filtro2).format('DD/MM/YYYY');
+            if (filtro2 != "") {
+                filtro2 = moment(filtro2).format('YYYYMMDD');
+            }
+
+            //no olvidarme de volver a poner (pop) las filas
+            //esto es por si se realizo algun filtro asi se vuelve a cargar el datatable
+
+            $.fn.dataTable.ext.search.pop(
+                function (settings, data, dataIndex) {
+                    if (1) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+            table.draw();
+
+            if (filtro3 != "") {
+                var pacientes = filtro3;
+                console.log(pacientes);
+            }
+            if (filtro4 != "") {
+                var estados = filtro4;
+                console.log(estados);
+            }
+            if (filtro1 != "") {
+                var desde = filtro1;
+                console.log(desde);
+            }
+            if (filtro2 != "") {
+                var hasta = filtro2;
+                console.log(hasta);
+            }
+            filtros = "";
+            if (filtro1 == "" && filtro2 == "" && filtro3 == "" && filtro4 == "") {
+                console.log('filtro 0');
+                var filtros = "Ningún filtro aplicado.";
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    if (true) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+            if (filtro1 != "" && filtro2 == "" && filtro3 == "" && filtro4 == "") {
+                console.log('filtro 1');
+                var filtros = "F. desde: " + filtro1Titulo + ".";
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    var datearray1 = data[3].split("/");
+                    var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
+                    if (desde <= newdate1) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+
+            else if (filtro1 != "" && filtro2 != "" && filtro3 == "" && filtro4 == "") {
+                console.log('filtro 2');
+                var filtros = "F. desde: " + filtro1Titulo + " y F. hasta: " + filtro2Titulo;
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    var datearray1 = data[3].split("/");
+                    var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
+                    if (desde <= newdate1 && hasta >= newdate1) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+
+            else if (filtro1 != "" && filtro2 != "" && filtro3 != "" && filtro4 == "") {
+                console.log('filtro 3');
+                var filtros = "F. desde: " + filtro1Titulo + ", F. hasta: " + filtro2Titulo + " y Pacientes: " + String(filtro3);
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    var datearray1 = data[3].split("/");
+                    var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
+                    if (desde <= newdate1 && hasta >= newdate1 && pacientes.includes(data[0])) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+            else if (filtro1 != "" && filtro2 != "" && filtro3 != "" && filtro4 != "") {
+                console.log('filtro 4');
+                var filtros = "F. desde: " + filtro1Titulo + ", F. hasta: " + filtro2Titulo + ", Pacientes: " + String(filtro3) + " y Estados: " + String(filtro4);
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    var datearray1 = data[3].split("/");
+                    var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
+                    if (desde <= newdate1 && hasta >= newdate1 && pacientes.includes(data[0]) && estados.includes(data[4])) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+            else if (filtro1 == "" && filtro2 != "" && filtro3 != "" && filtro4 != "") {
+                console.log('filtro 5');
+                var filtros = "F. hasta: " + filtro2Titulo + ", Pacientes: " + String(filtro3) + " y Estados: " + String(filtro4);
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    var datearray1 = data[3].split("/");
+                    var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
+                    if (hasta >= newdate1 && pacientes.includes(data[0]) && estados.includes(data[4])) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+            else if (filtro1 == "" && filtro2 != "" && filtro3 == "" && filtro4 != "") {
+                console.log('filtro 6');
+                var filtros = "F. hasta: " + filtro2Titulo + " y Estados: " + String(filtro4);
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    var datearray1 = data[3].split("/");
+                    var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
+                    if (hasta >= newdate1 && estados.includes(data[4])) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+            else if (filtro1 == "" && filtro2 != "" && filtro3 == "" && filtro4 == "") {
+                console.log('filtro 7');
+                var filtros = "F. hasta: " + filtro2Titulo + ".";
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    var datearray1 = data[3].split("/");
+                    var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
+                    if (hasta >= newdate1) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+
+            else if (filtro1 == "" && filtro2 == "" && filtro3 != "" && filtro4 != "") {
+                console.log('filtro 8');
+                var filtros = "Pacientes: " + String(filtro3) + " y Estados: " + String(filtro4);
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    if (pacientes.includes(data[0]) && estados.includes(data[4])) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+            else if (filtro1 == "" && filtro2 == "" && filtro3 != "" && filtro4 == "") {
+                console.log('filtro 9');
+                var filtros = "Pacientes: " + String(filtro3);
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    if (pacientes.includes(data[0])) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+            else if (filtro1 != "" && filtro2 == "" && filtro3 != "" && filtro4 == "") {
+                console.log('filtro 10');
+                var filtros = "F. desde: " + filtro1Titulo + "y Pacientes: " + String(filtro3) + ".";
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    var datearray1 = data[3].split("/");
+                    var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
+                    if (desde <= newdate1 && pacientes.includes(data[0])) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+            else if (filtro1 == "" && filtro2 != "" && filtro3 != "" && filtro4 == "") {
+                console.log('filtro 11');
+                var filtros = "F. hasta: " + filtro2Titulo + "y Pacientes: " + String(filtro3) + ".";
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    var datearray1 = data[3].split("/");
+                    var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
+                    if (hasta >= newdate1 && pacientes.includes(data[0])) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+
+            else if (filtro1 == "" && filtro2 == "" && filtro3 == "" && filtro4 != "") {
+                console.log('filtro 12');
+                var filtros = "Estados: " + String(filtro4) + ".";
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    if (estados.includes(data[4])) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+            else if (filtro1 != "" && filtro2 == "" && filtro3 == "" && filtro4 != "") {
+                console.log('filtro 13');
+                var filtros = "F. desde: " + filtro1Titulo + " y Estados: " + String(filtro4);
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    var datearray1 = data[3].split("/");
+                    var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
+                    if (desde <= newdate1 && estados.includes(data[4])) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+            else if (filtro1 != "" && filtro2 != "" && filtro3 == "" && filtro4 != "") {
+                console.log('filtro 14');
+                var filtros = "F. desde: " + filtro1Titulo + ", F. hasta: " + filtro2Titulo + " y Estados: " + String(filtro4);
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    var datearray1 = data[3].split("/");
+                    var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
+                    if (desde <= newdate1 && hasta >= newdate1 && estados.includes(data[4])) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+            }
+            else if (filtro1 != "" && filtro2 == "" && filtro3 != "" && filtro4 != "") {
+                console.log('filtro 15');
+                var filtros = "F. desde: " + filtro1Titulo + ", Pacientes: " + String(filtro3) + " y Estados: " + String(filtro4);
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex) {
+                    var datearray1 = data[3].split("/");
+                    var newdate1 = datearray1[2] + datearray1[1] + datearray1[0];
+                    if (desde <= newdate1 && pacientes.includes(data[0]) && estados.includes(data[4])) {
+                        return true;
+
+                    } else {
+                        return false;
+
+                    }
+                }
+
+                $.fn.dataTable.ext.search.push(filtradoTabla)
+
+                table.draw()
+
+
+
+            }
+            $('#filtros').val(String(filtros));
+
+        });
+    });
 </script>
 {%endblock scripts%}
