@@ -145,7 +145,7 @@ class Producto(models.Model):
     descripcion = models.CharField(max_length = 120, blank = False, null = True)
     caracteristicaProducto = models.ForeignKey(CaracteristicaProducto, verbose_name="CaracteristicaProducto", on_delete=models.CASCADE)
     valorCaracteristicaProducto = models.ForeignKey(ValorCaracteristicaProducto, verbose_name="ValorCaracteristicaProducto", on_delete=models.CASCADE)
-    precio = models.DecimalField(max_digits=5, decimal_places=2, blank = True, null = True)
+    precio = models.DecimalField(max_digits=6, decimal_places=2, blank = True, null = True)
 
     class Meta:
         verbose_name = 'Producto'
@@ -159,10 +159,10 @@ class Pedido(models.Model):
     id = models.AutoField(primary_key = True)
     paciente = models.ForeignKey(Paciente, verbose_name="Paciente", on_delete=models.CASCADE)
     producto = models.ManyToManyField(Producto, verbose_name="Producto")
-    subtotal = models.DecimalField(max_digits=5, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=7, decimal_places=2)
     tipoDePago = models.ForeignKey(TipoDePago, verbose_name="TipoDePago", on_delete=models.CASCADE)
     estado = models.ForeignKey(EstadoPedido, verbose_name="EstadoPedido", on_delete=models.CASCADE)
-    
+    user = models.ForeignKey(User, verbose_name="User", on_delete=models.CASCADE, null=True)
     
     class Meta:
         verbose_name = 'Pedido'

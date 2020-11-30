@@ -223,7 +223,8 @@ def createPedido (request):
             paciente = Paciente.objects.get(id=request.POST.get('paciente')),
             subtotal = request.POST.get('subtotal'),
             estado = EstadoPedido.objects.get(nombre='Pendiente'),
-            tipoDePago = TipoDePago.objects.get(id=request.POST.get('tipo_pago'))
+            tipoDePago = TipoDePago.objects.get(id=request.POST.get('tipo_pago')),
+            user= User.objects.get(id=request.user.id)
         )
         productos = request.POST.getlist('productos')
         for producto in productos:
