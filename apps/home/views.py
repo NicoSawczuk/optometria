@@ -291,7 +291,9 @@ def getValoresCaracteristica (request):
 
 def indexVentas(request):
     ventas = Pedido.objects.filter(estado__nombre='Finalizado')
-    return render (request, 'ventas/index.html',{'ventas':ventas})
+    vendedores = User.objects.filter(groups__name='Ventas')
+    tiposPago = TipoDePago.objects.all()
+    return render (request, 'ventas/index.html',{'ventas':ventas, 'tiposPago':tiposPago, 'vendedores':vendedores})
 
 class Login(FormView):
     template_name='login.html'
