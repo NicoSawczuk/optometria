@@ -108,7 +108,10 @@ def registrarFalta (request,pk):
 
 
 def indexTurnos (request):
-    turnos = Turno.objects.all()
+    if(request.user.groups.filter(name='Profesional medico').exists()):
+        turnos = Turno.objects.filter(medico_id=request.user.medico.id)
+    else:
+        turnos = Turno.objects.all()
     pacientes = Paciente.objects.all()
     estados = EstadoTurno.objects.all()
     return render (request, 'turnos/index.html',{'turnos':turnos, 'pacientes': pacientes, 'estados': estados})
