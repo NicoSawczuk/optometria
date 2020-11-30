@@ -205,6 +205,9 @@ def getValores (request):
     data = serializers.serialize('json', valores, fields=('id','valor'))
     return HttpResponse(data, content_type='application/json')
 
+
+
+
 def indexPedidos (request):
     pedidos = Pedido.objects.all()
     estados = EstadoPedido.objects.all()
@@ -276,6 +279,13 @@ def getValoresCaracteristica (request):
     print(caracteristica)
     data = serializers.serialize('json',caracteristica, fields=('id', 'valor'))
     return HttpResponse(data, content_type='application/json')
+
+
+
+
+def indexVentas(request):
+    ventas = Pedido.objects.filter(estado__nombre='Finalizado')
+    return render (request, 'ventas/index.html',{'ventas':ventas})
 
 class Login(FormView):
     template_name='login.html'
