@@ -9,7 +9,9 @@
 <div class="card">
     <div class="card-header bg-light">
         <strong>Turnos</strong>
+        {% if not user.groups.all.0.name == 'Profesional medico' %}
         <a class="btn btn-primary btn-sm float-right text-white" href="/home/turnos/create">Nuevo</a>
+        {%endif%}
     </div>
     <div class="card-body card-block">
         <div class="mt-1 mr-1">
@@ -84,14 +86,18 @@
                             <a title="Observaciones" class="btn btn-light btn-sm"
                                 onclick="openModalObservacion('{{turno.paciente.id}}','{{turno.estado.nombre}}')"><i
                                     class="fal fa-book-medical fa-lg"></i></a>
+                            {% if not user.groups.all.0.name == 'Profesional medico' %}
                             <a title="Editar" class="btn btn-light btn-sm" href="/home/turnos/edit/{{turno.id}}"><i
                                     class="fal fa-edit fa-lg"></i></a>
+                            {%endif%}
                             {%if turno.estado.nombre == 'Sin atender' %}
                             <a title="Registrar falta" onclick="openModalFalta('{{turno.id}}')"
                                 class="btn btn-light btn-sm"><i class="fal fa-times-octagon fa-lg"></i></a>
                             {%endif%}
+                            {% if not user.groups.all.0.name == 'Profesional medico' %}
                             <a title="Eliminar turno" onclick="openModalDelete('{{turno.id}}')"
                                 class="btn btn-danger btn-sm"><i class="fal fa-trash fa-lg"></i></a>
+                            {%endif%}
                         </td>
                     </tr>
                     {%endfor%}
