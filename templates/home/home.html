@@ -17,13 +17,16 @@
     <link rel="stylesheet" href="{% static 'select2/css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
 
+    <link href="{% static 'clean-blog/css/clean-blog1.css' %}" rel="stylesheet">
+
+
     <title> {%block titulo%} Home {%endblock titulo%}</title>
 </head>
 
 <body>
     {%block navbar%}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand">Optomotria</a>
+        <a class="navbar-brand" href="/home">Optomotria</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
             data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
             aria-label="Toggle navigation">
@@ -66,15 +69,59 @@
     </nav>
 
     {%endblock navbar%}
-
-    <div class="mt-4 container"></div>
-    <div class="row justify-content-center">
-        <div class="col-md-9">
-            {%block body%}
-
-            {%endblock body %}
+    
+    {%block foto%}
+    <header class="masthead" style="background-image: url('{% static 'images/home-bg.jpg'%}')">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-10 mx-auto">
+                    <div class="site-heading">
+                        <h1>Bienvenido</h1>
+                        <span class="subheading">Un sistema para la gestion de turnos de pacientes</span>
+                        <span class="subheading">Su rol es {{user.groups.all.0}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="row  justify-content-center">
+            <div class="col-lg-4">
+                <div class="rounded-circle" width="140" height="140" background="#777" color="#777">
+                    <i class="fas fa-5x fa-users"></i>
+                </div>
+                <h2>Pacientes</h2>
+                <p>Visualiza tus pacientes y agrega las observaciones correspondientes</p>
+            </div>
+            <div class="col-lg-4">
+                <div class="rounded-circle" width="140" height="140" background="#777" color="#777">
+                    <i class="fas fa-5x fa-clipboard-list"></i>
+                </div>
+                <h2>Pedidos</h2>
+                <p>Administra los pedidos y las ventas de tus clientes</p>
+            </div>
+            <div class="col-lg-4">
+                <div class="rounded-circle" width="140" height="140" background="#777" color="#777">
+                    <i class="fas fa-5x fa-shopping-cart"></i>
+                </div>
+                <h2>Productos</h2>
+                <p>Gestiona tus productos y todas sus carcaterísticas</p>
+            </div>
         </div>
     </div>
+    {%endblock %}
+    <div class="mt-4">
+        
+        <div class="row justify-content-center">
+            <div class="col-md-9">
+                
+                <!-- Page Header -->
+                {%block body%}
+    
+                {%endblock body %}
+            </div>
+        </div>
     </div>
 
     {%block scripts%}
