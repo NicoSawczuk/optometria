@@ -107,10 +107,12 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
+                {% if user.groups.all.0.name == 'Profesional medico' %}
                 <div id="botonNuevaObservacion" style="display: none;">
                     <a class="btn btn-success btn-sm text-white mb-2" onClick="mostrarFormObservacion()">Nueva
                         observación</a>
                 </div>
+                {% endif %}
                 <div class="form-group row" id="formNuevaObservacion" style="display: none;">
                     <form method="POST" action="/home/pacientes/observaciones/create">
                         {% csrf_token %}

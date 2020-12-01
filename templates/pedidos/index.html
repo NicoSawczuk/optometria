@@ -8,7 +8,9 @@
 <div class="card">
     <div class="card-header bg-light">
         <strong>Pedidos</strong>
+        {% if not user.groups.all.0.name == 'Taller' %}
         <a class="btn btn-primary btn-sm float-right text-white" href="/home/pedidos/create">Nuevo</a>
+        {%endif%}
     </div>
 
     <div class="card-body card-block">
@@ -65,7 +67,9 @@
                     <th scope="col">Paciente</th>
                     <th scope="col">Fecha</th>
                     <th scope="col">Productos</th>
+                    {% if not user.groups.all.0.name == 'Taller' %}
                     <th scope="col">Subtotal</th>
+                    {% endif %}
                     <th scope="col">Tipo de pago</th>
                     <th scope="col">Estado</th>
                     <th scope="col" class="text-right">Opciones</th>
@@ -82,7 +86,9 @@
                             <span class="badge badge-light">{{producto.nombre}} {{producto.caracteristicaProducto}} {{producto.valorCaracteristicaProducto}}</span>
                         {%endfor%}
                     </td>
+                    {% if not user.groups.all.0.name == 'Taller' %}
                     <td class="text-right">$ {{pedido.subtotal}}</td>
+                    {% endif %}
                     <td>{{pedido.tipoDePago.descripcion}}</td>
                     <td>
                         <span style="background-color:{{pedido.estado.colorEtiqueta}}; color: white;" class="badge">{{pedido.estado.nombre}}</span>
@@ -91,10 +97,14 @@
                         <a title="Cambiar estado" class="btn btn-light btn-sm"
                             onclick="openModalEstadoPedido('{{pedido.id}}','{{pedido.paciente}}','{{pedido.estado}}','{{pedido.estado.colorEtiqueta}}')"><i
                                 class="fal fa-search fa-lg"></i></a>
+                        {% if not user.groups.all.0.name == 'Taller' %}
                         <a title="Editar" class="btn btn-light btn-sm" href="/home/pedidos/edit/{{pedido.id}}"><i
                                 class="fal fa-edit fa-lg"></i></a>
+                        {%endif%}
+                        {% if not user.groups.all.0.name == 'Taller' %}
                         <a title="Eliminar pedido" onclick="openModalDelete('{{pedido.id}}')"
                             class="btn btn-danger btn-sm"><i class="fal fa-trash fa-lg"></i></a>
+                        {%endif%}
                     </td>
                 </tr>
                 {%endfor%}

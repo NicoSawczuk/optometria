@@ -31,7 +31,6 @@ def indexPacientes (request):
     estados = EstadoTurno.objects.all()
     if(request.user.groups.filter(name='Profesional medico').exists()):
         turnos = Turno.objects.filter(medico_id=request.user.medico.id)
-        print(turnos)
         pacientes = []
         for turno in turnos:
             if not(turno.paciente in pacientes):
