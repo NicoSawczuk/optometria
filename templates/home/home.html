@@ -31,27 +31,33 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
+                {% if user.groups.all.0.name == 'Gerencia' or user.groups.all.0.name == 'Profesional medico' or user.groups.all.0.name == 'Secretaria' %}
                 <li class="nav-item">
                     <a class="nav-link" href="/home/pacientes/index">Pacientes</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/home/turnos/index">Turnos</a>
                 </li>
+                {% endif %}
+                {% if user.groups.all.0.name == 'Gerencia' or user.groups.all.0.name == 'Ventas' %}
                 <li class="nav-item">
                     <a class="nav-link" href="/home/ventas/index">Ventas</a>
                 </li>
+                {% endif %}
+                {% if user.groups.all.0.name == 'Gerencia' or user.groups.all.0.name == 'Ventas' or user.groups.all.0.name == 'Taller'%}
                 <li class="nav-item">
                     <a class="nav-link" href="/home/pedidos/index">Pedidos</a>
                 </li>
+                {% endif %}
+                {% if user.groups.all.0.name == 'Gerencia' or user.groups.all.0.name == 'Ventas' %}
                 <li class="nav-item">
                     <a class="nav-link" href="/home/productos/index">Productos</a>
                 </li>
-
+                {% endif %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdownPortfolio" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">{{user.username}}</a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownPortfolio">
-                        <a class="dropdown-item" href="#">Perfil</a>
                         <a class="dropdown-item" href="{%url 'logout'%}">Salir</a>
                     </div>
                 </li>
