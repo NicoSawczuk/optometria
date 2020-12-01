@@ -215,7 +215,8 @@ def getValores (request):
 def indexPedidos (request):
     pedidos = Pedido.objects.all()
     estados = EstadoPedido.objects.all()
-    return render (request, 'pedidos/index.html',{'pedidos':pedidos, 'estados': estados})
+    productos = Producto.objects.all()
+    return render (request, 'pedidos/index.html',{'pedidos':pedidos, 'estados': estados, 'productos':productos })
 
 def createPedido (request):
     if request.method == 'GET':
@@ -225,13 +226,15 @@ def createPedido (request):
         
         return render (request, 'pedidos/create.html',{'productos':productos, 'tiposDePago': tiposDePago, 'pacientes': pacientes})
     else:
-        
+        myDate = datetime.now()
+        formatedDate = myDate.strftime("%Y-%m-%d")
         pedido = Pedido.objects.create(
             paciente = Paciente.objects.get(id=request.POST.get('paciente')),
             subtotal = request.POST.get('subtotal'),
             estado = EstadoPedido.objects.get(nombre='Pendiente'),
             tipoDePago = TipoDePago.objects.get(id=request.POST.get('tipo_pago')),
-            user= User.objects.get(id=request.user.id)
+            user= User.objects.get(id=request.user.id),
+            fecha_pedido = formatedDate
         )
         productos = request.POST.getlist('productos')
         for producto in productos:
