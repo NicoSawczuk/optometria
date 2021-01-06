@@ -77,12 +77,12 @@ WSGI_APPLICATION = 'optometria.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
-    'memory': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'dd3fpcn3dg1kl6',
+        'USER': 'gdpxcxgejtbuev',
+        'PASSWORD': '5f836b515aa93d875ac9c260b0649bd409f40ea97ddc4d943f066126c55dc31a',
+        'HOST': 'ec2-23-20-205-19.compute-1.amazonaws.com',
+        'PORT': 5432,
     }
 }
 
