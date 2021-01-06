@@ -147,7 +147,7 @@
     "pk": 20,
     "fields": {
       "nombre": "Pedido",
-      "descripcion": "El rol de ventas confirma el pedido y lo pasa a estado Pedido",
+      "descripcion": "Confirma el pedido y lo pasa a estado Pedido",
       "colorEtiqueta": "#ffc107"
     }
   },
