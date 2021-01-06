@@ -26,7 +26,7 @@ SECRET_KEY = 'jh_%4pk)y#s0!ve5pmmam%81ic!3hwm3lw+q+^i(&mb7dc@vwq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['optometria.herokuapp.com']
+ALLOWED_HOSTS = ['optometriasystem.herokuapp.com']
 
 
 # Application definition
